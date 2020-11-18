@@ -1,11 +1,11 @@
-let canvasW = 512;
-let canvasH = 512;
+const canvasW = 512;
+const canvasH = 512;
 
 let y = 0;
 let speed = 4;
 
 function setup() {
-  createCanvas(canvasW, canvasH)
+  createCanvas(canvasW, canvasH);
 }
 
 function draw() {
@@ -13,12 +13,14 @@ function draw() {
   stroke(255);
   strokeWeight(4);
   noFill();
-  ellipse(canvasH / 2, y, 100, 100)
+  ellipse(canvasH / 2, y, 100, 100);
 
   if (y > height) {
     speed = -4;
   }
 
-  y = y + speed
+  y += speed;
 }
 
+window.setup = setup;
+window.draw = draw;
