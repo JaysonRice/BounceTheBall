@@ -52,6 +52,10 @@ function mouseClicked() {
   ball.clickEvent(mouseX, mouseY);
 }
 
+function touchStarted() {
+  mouseClicked();
+}
+
 window.setup = setup;
 window.draw = draw;
 window.mouseClicked = mouseClicked;
