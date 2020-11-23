@@ -17,7 +17,7 @@ class Ball {
 
     this.restitution = 0.8;
 
-    this.gravity = createVector(0, 0.01);
+    this.gravity = createVector(0, 0.05);
     this.speedLimit = 20;
 
     // For applying user input force to ball
@@ -72,7 +72,6 @@ class Ball {
   }
 
   draw() {
-    fill(255, 30);
     ellipse(this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
   }
 }

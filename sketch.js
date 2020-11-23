@@ -9,6 +9,7 @@ function setup() {
 
 function draw() {
   // background(25);
+  fill(255, 30); // transparent for debug
   ball.draw();
   ball.update();
 }
