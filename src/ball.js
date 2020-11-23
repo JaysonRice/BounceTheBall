@@ -10,8 +10,8 @@ class Ball {
 
     // Constrain angle to always be hitting the ball up
     // ie angleHit = constrain(angleHit, this.minAngle, this.maxAngle)
-    this.minAngle = -PI * 0.75;
-    this.maxAngle = -PI * 0.25;
+    this.minAngle = -PI * 0.65;
+    this.maxAngle = -PI * 0.35;
 
     this.pos = createVector(x, y);
     this.vel = createVector();
@@ -19,30 +19,36 @@ class Ball {
 
     this.restitution = 0.8;
 
-    this.gravity = createVector(0, 0.1);
-    this.speedLimit = 20;
+    this.gravity = createVector(0, 0.3);
+    this.speedLimit = 17;
 
     // For applying user input force to ball
     this.hitVelocity = createVector();
     // Magic number, can be adjusted at will until it feels right
     // No f=ma stuff happening, just applied as a veloctiy (in pixels per frame)
-    this.hitMagnitude = this.gravity.y * 300;
+    this.hitMagnitude = this.gravity.y * 100;
 
     this.ballIsHit = false;
     this.hitCount = 0;
   }
 
   clickEvent(clickX, clickY) {
-    this.ballIsHit = dist(this.pos.x, this.pos.y, clickX, clickY) < this.radius;
+    const d = dist(this.pos.x, this.pos.y, clickX, clickY);
+    this.ballIsHit = d < this.radius;
 
     // If hit is too high on ball, ignore
-    const tooHigh = this.pos.y - clickY > this.radius * 0.3;
+    const tooHigh = this.pos.y - clickY > this.radius * 0.7;
 
     if (this.ballIsHit && !tooHigh) {
       // Find angle between click position and center of ball
       let angle = -atan2(clickY - this.pos.y, clickX - this.pos.x);
       angle = constrainAngle(angle, this.minAngle, this.maxAngle);
       this.hitCount += 1;
+
+      // If hit on ball is near the center, change angle to mostly straight up
+      if (d < this.radius / 3) {
+        angle = random(-1.6, -1.4)
+      }
 
       // Calc vector to apply force to ball using
       this.hitVelocity.y = 0;
