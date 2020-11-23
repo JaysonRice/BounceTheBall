@@ -5,6 +5,10 @@ class Ball {
     this.pos = createVector(x, y);
     this.vel = createVector();
     this.acc = createVector();
+    this.minX = this.radius;
+    this.maxX = width - this.radius;
+
+    this.restitution = 0.8
 
     this.gravity = createVector(0, 0.1);
     this.speedLimit = 20;
@@ -29,6 +33,7 @@ class Ball {
       this.hitVelocity.rotate(angle);
     }
 
+    // TODO: Delete me after debugging
     push();
     fill(255, 0, 0);
     ellipse(x, y, 30, 30);
@@ -36,6 +41,8 @@ class Ball {
   }
 
   update() {
+
+    this.wallBounce()
     this.vel.add(this.acc);
     this.vel.add(this.gravity);
 
@@ -45,6 +52,15 @@ class Ball {
 
     this.vel.limit(this.speedLimit);
     this.pos.add(this.vel);
+    this.pos.x = constrain(this.pos.x, this.minX, this.maxX)
+  }
+
+  wallBounce() {
+
+    if (this.pos.x >= this.maxX || this.pos.x <= this.minX) {
+      this.vel.x *= -this.restitution
+    }
+
   }
 
   draw() {
