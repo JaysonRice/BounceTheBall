@@ -1,4 +1,4 @@
-import constrainAngle from "./helpers/constrainAngle.js";
+import constrainAngle from './helpers/constrainAngle.js';
 
 class Ball {
   constructor(x, y, radius) {
@@ -32,7 +32,6 @@ class Ball {
     this.hitCount = 0;
   }
 
-
   clickEvent(clickX, clickY) {
     this.ballIsHit = dist(this.pos.x, this.pos.y, clickX, clickY) < this.radius;
 
@@ -43,7 +42,7 @@ class Ball {
       // Find angle between click position and center of ball
       let angle = -atan2(clickY - this.pos.y, clickX - this.pos.x);
       angle = constrainAngle(angle, this.minAngle, this.maxAngle);
-      this.hitCount += 1
+      this.hitCount += 1;
 
       // Calc vector to apply force to ball using
       this.hitVelocity.y = 0;
@@ -80,12 +79,12 @@ class Ball {
   }
 
   draw() {
-    push()
+    push();
     if (this.ballIsHit) {
-      fill(0, 0, 255)
+      fill(0, 0, 255);
     }
     ellipse(this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
-    pop()
+    pop();
   }
 }
 

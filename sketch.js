@@ -12,10 +12,10 @@ function draw() {
   fill(255, 30); // transparent for debug
   ball.draw();
   ball.update();
-  stroke(0)
-  textSize(200)
-  textAlign(CENTER, CENTER)
-  text(ball.hitCount, width / 2, height / 2)
+  stroke(0);
+  textSize(200);
+  textAlign(CENTER, CENTER);
+  text(ball.hitCount, width / 2, height / 2);
 }
 
 function mouseClicked() {
