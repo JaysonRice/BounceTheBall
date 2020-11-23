@@ -1,3 +1,5 @@
+import constrainAngle from "./helpers/constrainAngle.js";
+
 class Ball {
   constructor(x, y, radius) {
     this.radius = radius;
@@ -17,7 +19,7 @@ class Ball {
 
     this.restitution = 0.8;
 
-    this.gravity = createVector(0, 0.05);
+    this.gravity = createVector(0, 0.1);
     this.speedLimit = 20;
 
     // For applying user input force to ball
@@ -25,18 +27,23 @@ class Ball {
     // Magic number, can be adjusted at will until it feels right
     // No f=ma stuff happening, just applied as a veloctiy (in pixels per frame)
     this.hitMagnitude = this.gravity.y * 300;
+
+    this.ballIsHit = false;
+    this.hitCount = 0;
   }
 
+
   clickEvent(clickX, clickY) {
-    const ballIsHit = dist(this.pos.x, this.pos.y, clickX, clickY) < this.radius;
+    this.ballIsHit = dist(this.pos.x, this.pos.y, clickX, clickY) < this.radius;
 
     // If hit is too high on ball, ignore
-    const tooHigh = this.pos.y - clickY > this.radius * 0.8;
+    const tooHigh = this.pos.y - clickY > this.radius * 0.3;
 
-    if (ballIsHit && !tooHigh) {
+    if (this.ballIsHit && !tooHigh) {
       // Find angle between click position and center of ball
-      let angle = atan2(clickY - this.pos.y, clickX - this.pos.x);
-      angle = constrain(angle, this.minAngle, this.maxAngle);
+      let angle = -atan2(clickY - this.pos.y, clickX - this.pos.x);
+      angle = constrainAngle(angle, this.minAngle, this.maxAngle);
+      this.hitCount += 1
 
       // Calc vector to apply force to ball using
       this.hitVelocity.y = 0;
@@ -59,6 +66,7 @@ class Ball {
     this.vel.add(this.hitVelocity);
     // Reset hit velocity so its only applied once
     this.hitVelocity.mult(0);
+    this.ballIsHit = false;
 
     this.vel.limit(this.speedLimit);
     this.pos.add(this.vel);
@@ -72,7 +80,12 @@ class Ball {
   }
 
   draw() {
+    push()
+    if (this.ballIsHit) {
+      fill(0, 0, 255)
+    }
     ellipse(this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
+    pop()
   }
 }
 
