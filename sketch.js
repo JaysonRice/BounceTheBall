@@ -18,15 +18,15 @@ function draw() {
   text(ball.hitCount, width / 2, height / 2);
 }
 
-function mouseClicked() {
+function mousePressed() {
   ball.clickEvent(mouseX, mouseY);
 }
 
 function touchStarted() {
-  mouseClicked();
+  mousePressed();
 }
 
-window.mouseClicked = mouseClicked;
+window.mousePressed = mousePressed;
 window.touchStarted = touchStarted;
 
 window.setup = setup;
