@@ -37,7 +37,7 @@ class Ball {
     this.ballIsHit = d < this.radius;
 
     // If hit is too high on ball, ignore
-    const tooHigh = this.pos.y - clickY > this.radius * 0.7;
+    const tooHigh = this.pos.y - clickY > this.radius * 0.8;
 
     if (this.ballIsHit && !tooHigh) {
       // Find angle between click position and center of ball
