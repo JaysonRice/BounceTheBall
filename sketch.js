@@ -1,10 +1,12 @@
 import Ball from './src/ball.js';
+import Sprite from './src/sprite.js'
 
 let ball;
 let spritesheet;
 let spritedata;
 
 let animation = [];
+let newBall;
 
 function preload() {
   spritedata = loadJSON('src/images/ball.json')
@@ -22,9 +24,8 @@ function setup() {
 
     animation.push(img);
   }
-
+  newBall = new Sprite(animation, .1);
   ball = new Ball(width / 2, 0, 50);
-  console.log(spritedata);
 }
 
 function draw() {
@@ -37,7 +38,10 @@ function draw() {
   textAlign(CENTER, CENTER);
   text(ball.hitCount, width / 2, height / 2);
 
-  image(animation[frameCount % animation.length], 0, 0);
+  // image(animation[frameCount % animation.length], 0, 0);
+
+  newBall.show();
+  newBall.animate();
 }
 
 function mousePressed() {
