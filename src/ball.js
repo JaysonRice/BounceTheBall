@@ -36,17 +36,18 @@ class Ball {
   }
 
   clickEvent(clickX, clickY) {
-    const d = dist(this.pos.x, this.pos.y, clickX, clickY);
-    this.ballIsHit = d < this.radius;
-
-    // If hit is too high on ball, ignore
+    // If hit is too high on ball, it will be ignored
     const tooHigh = this.pos.y - clickY > this.radius * 0.8;
 
-    if (this.ballIsHit && !tooHigh) {
+    const d = dist(this.pos.x, this.pos.y, clickX, clickY);
+    this.ballIsHit = d < this.radius && !tooHigh;
+
+    if (this.ballIsHit) {
+      this.hitCount += 1;
+
       // Find angle between click position and center of ball
       let angle = -atan2(clickY - this.pos.y, clickX - this.pos.x);
       angle = constrainAngle(angle, this.minAngle, this.maxAngle);
-      this.hitCount += 1;
 
       // If hit on ball is near the center, change angle to mostly straight up
       if (d < this.radius / 3) {
@@ -57,8 +58,7 @@ class Ball {
       }
 
       // Calc vector to apply force to ball using
-      this.hitVelocity.y = 0;
-      this.hitVelocity.x = -this.hitMagnitude;
+      this.hitVelocity.set(-this.hitMagnitude, 0);
       this.hitVelocity.rotate(-angle);
     }
 
