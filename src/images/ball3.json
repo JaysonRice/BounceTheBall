@@ -1,0 +1,40 @@
+{
+	"frames": [
+		{
+			"name": "Ball1.png",
+			"position": {
+				"x": 1,
+				"y": 1,
+				"w": 250,
+				"h": 250
+			}
+		},
+		{
+			"name": "Ball2.png",
+			"position": {
+				"x": 253,
+				"y": 1,
+				"w": 250,
+				"h": 250
+			}
+		},
+		{
+			"name": "Ball3.png",
+			"position": {
+				"x": 1,
+				"y": 253,
+				"w": 250,
+				"h": 250
+			}
+		},
+		{
+			"name": "Ball4.png",
+			"position": {
+				"x": 253,
+				"y": 253,
+				"w": 250,
+				"h": 250
+			}
+		}
+	]
+}
