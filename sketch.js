@@ -12,9 +12,19 @@ function preload() {
 }
 
 function setup() {
-  preload()
   createCanvas(windowWidth, windowHeight);
+
+  let frames = spritedata.frames;
+
+  for (let i = 0; i < frames.length; i++) {
+    let pos = frames[i].position;
+    let img = spritesheet.get(pos.x, pos.y, pos.w, pos.h);
+
+    animation.push(img);
+  }
+
   ball = new Ball(width / 2, 0, 50);
+  console.log(spritedata);
 }
 
 function draw() {
@@ -26,7 +36,8 @@ function draw() {
   textSize(200);
   textAlign(CENTER, CENTER);
   text(ball.hitCount, width / 2, height / 2);
-  image(spritesheet, 0, 0);
+
+  image(animation[frameCount % animation.length], 0, 0);
 }
 
 function mousePressed() {
@@ -40,6 +51,6 @@ function touchStarted() {
 window.mousePressed = mousePressed;
 window.touchStarted = touchStarted;
 
-
+window.preload = preload;
 window.setup = setup;
 window.draw = draw;

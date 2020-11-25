@@ -1,75 +1,31 @@
 {
-	"frames": {
-		"Ball1.png": {
-			"frame": {
+	"frames": [
+		{
+			"name": "Ball1.png",
+			"position": {
 				"x": 1,
 				"y": 1,
 				"w": 400,
 				"h": 400
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 400,
-				"h": 400
-			},
-			"sourceSize": {
-				"w": 400,
-				"h": 400
 			}
 		},
-		"Ball2.png": {
-			"frame": {
+		{
+			"name": "Ball1.png",
+			"position": {
 				"x": 403,
 				"y": 1,
 				"w": 400,
 				"h": 400
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 400,
-				"h": 400
-			},
-			"sourceSize": {
-				"w": 400,
-				"h": 400
 			}
 		},
-		"Ball3.png": {
-			"frame": {
+		{
+			"name": "Ball1.png",
+			"position": {
 				"x": 1,
 				"y": 403,
 				"w": 400,
 				"h": 400
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 400,
-				"h": 400
-			},
-			"sourceSize": {
-				"w": 400,
-				"h": 400
 			}
 		}
-	},
-	"meta": {
-		"app": "http://www.codeandweb.com/texturepacker",
-		"version": "1.0",
-		"image": "spritesheet.png",
-		"format": "RGBA8888",
-		"size": {
-			"w": 804,
-			"h": 804
-		},
-		"scale": "1"
-	}
+	]
 }
