@@ -1,8 +1,18 @@
 import Ball from './src/ball.js';
 
 let ball;
+let spritesheet;
+let spritedata;
+
+let animation = [];
+
+function preload() {
+  spritedata = loadJSON('src/images/ball.json')
+  spritesheet = loadImage('src/images/ball.png')
+}
 
 function setup() {
+  preload()
   createCanvas(windowWidth, windowHeight);
   ball = new Ball(width / 2, 0, 50);
 }
@@ -16,6 +26,7 @@ function draw() {
   textSize(200);
   textAlign(CENTER, CENTER);
   text(ball.hitCount, width / 2, height / 2);
+  image(spritesheet, 0, 0);
 }
 
 function mousePressed() {
@@ -28,6 +39,7 @@ function touchStarted() {
 
 window.mousePressed = mousePressed;
 window.touchStarted = touchStarted;
+
 
 window.setup = setup;
 window.draw = draw;
