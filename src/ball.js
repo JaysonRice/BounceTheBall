@@ -47,7 +47,7 @@ class Ball {
 
       // If hit on ball is near the center, change angle to mostly straight up
       if (d < this.radius / 3) {
-        angle = random(-1.6, -1.4)
+        angle = random(-1.6, -1.4);
       }
 
       // Calc vector to apply force to ball using
