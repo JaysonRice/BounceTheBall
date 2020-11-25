@@ -1,7 +1,7 @@
 import constrainAngle from './helpers/constrainAngle.js';
 
 class Ball {
-  constructor(x, y, radius) {
+  constructor(x, y, radius, animation, speed) {
     // For scoring
     this.ballIsHit = false;
     this.hitCount = 0;
@@ -31,6 +31,13 @@ class Ball {
     this.hitMagnitude = this.gravity.y * 100;
     // For applying hitMagnitude to ball
     this.hitVelocity = createVector();
+
+    // Animation (fps)
+    this.animation = animation;
+    this.speed = speed;
+    this.len = this.animation.length;
+    this.frameIndex = 0;
+
   }
 
   checkHit(x, y) {
@@ -114,12 +121,19 @@ class Ball {
   }
 
   draw() {
+    let frameIndex = floor(this.frameIndex) % this.len
+    image(this.animation[frameIndex], this.pos.x, this.pos.y, [100], [100]);
+
     push();
     if (this.ballIsHit) {
       fill(0, 0, 255);
     }
-    ellipse(this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
+    // ellipse(this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
     pop();
+  }
+
+  animate() {
+    this.frameIndex += this.speed
   }
 }
 
