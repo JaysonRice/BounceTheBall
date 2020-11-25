@@ -9,8 +9,8 @@ let animation = [];
 let newBall;
 
 function preload() {
-  spritedata = loadJSON('src/images/ball.json')
-  spritesheet = loadImage('src/images/ball.png')
+  spritedata = loadJSON('src/images/ball2.json')
+  spritesheet = loadImage('src/images/ball2.png')
 }
 
 function setup() {
@@ -24,7 +24,7 @@ function setup() {
 
     animation.push(img);
   }
-  newBall = new Sprite(animation, .1);
+  newBall = new Sprite(animation, .15);
   ball = new Ball(width / 2, 0, 50);
 }
 

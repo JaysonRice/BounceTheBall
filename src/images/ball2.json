@@ -5,25 +5,34 @@
 			"position": {
 				"x": 1,
 				"y": 1,
-				"w": 400,
+				"w": 350,
 				"h": 400
 			}
 		},
 		{
-			"name": "Ball1.png",
+			"name": "Ball2.png",
 			"position": {
-				"x": 403,
+				"x": 353,
 				"y": 1,
-				"w": 400,
+				"w": 350,
 				"h": 400
 			}
 		},
 		{
-			"name": "Ball1.png",
+			"name": "Ball3.png",
+			"position": {
+				"x": 705,
+				"y": 1,
+				"w": 350,
+				"h": 400
+			}
+		},
+		{
+			"name": "Ball4.png",
 			"position": {
 				"x": 1,
 				"y": 403,
-				"w": 400,
+				"w": 350,
 				"h": 400
 			}
 		}
