@@ -50,7 +50,10 @@ class Ball {
 
       // If hit on ball is near the center, change angle to mostly straight up
       if (d < this.radius / 3) {
-        angle = random(-1.6, -1.4);
+        const dAngle = 0.1; // How much to deviate from straight up
+        const straightUp = -PI / 2;
+
+        angle = random(straightUp - dAngle, straightUp + dAngle);
       }
 
       // Calc vector to apply force to ball using
