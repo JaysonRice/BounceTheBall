@@ -67,17 +67,20 @@ class Ball {
   }
 
   update() {
+    // Bounce off side walls
     this.wallBounce();
-    this.vel.add(this.gravity);
 
+    // hitVelocity is only non-zero if user just successfully hit
     this.vel.add(this.hitVelocity);
-    // Reset hit velocity so its only applied once
-    this.hitVelocity.mult(0);
-    this.ballIsHit = false;
-
+    this.vel.add(this.gravity);
     this.vel.limit(this.speedLimit);
+
     this.pos.add(this.vel);
     this.pos.x = constrain(this.pos.x, this.minX, this.maxX);
+
+    // Reset hit state after ball has been hit
+    this.hitVelocity.set(0, 0);
+    this.ballIsHit = false;
   }
 
   wallBounce() {
