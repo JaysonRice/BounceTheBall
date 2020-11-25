@@ -2,34 +2,37 @@ import constrainAngle from './helpers/constrainAngle.js';
 
 class Ball {
   constructor(x, y, radius) {
+    // For scoring
+    this.ballIsHit = false;
+    this.hitCount = 0;
+
     this.radius = radius;
 
     // For detecting if edge of ball off screen in X dir
     this.minX = this.radius;
     this.maxX = width - this.radius;
 
+    // Physics (position, velocity, acceleration)
+    // TODO: acceleration not currently used, delete
+    //  from final product if still unused
+    this.pos = createVector(x, y);
+    this.vel = createVector();
+
     // Constrain angle to always be hitting the ball up
     // ie angleHit = constrain(angleHit, this.minAngle, this.maxAngle)
     this.minAngle = -PI * 0.65;
     this.maxAngle = -PI * 0.35;
 
-    this.pos = createVector(x, y);
-    this.vel = createVector();
-    this.acc = createVector();
-
+    // Magic number constant land:
     this.restitution = 0.8;
-
     this.gravity = createVector(0, 0.3);
     this.speedLimit = 17;
 
-    // For applying user input force to ball
-    this.hitVelocity = createVector();
-    // Magic number, can be adjusted at will until it feels right
+    // How hard does the user hit the ball?
     // No f=ma stuff happening, just applied as a veloctiy (in pixels per frame)
     this.hitMagnitude = this.gravity.y * 100;
-
-    this.ballIsHit = false;
-    this.hitCount = 0;
+    // For applying hitMagnitude to ball
+    this.hitVelocity = createVector();
   }
 
   clickEvent(clickX, clickY) {
@@ -65,7 +68,6 @@ class Ball {
 
   update() {
     this.wallBounce();
-    this.vel.add(this.acc);
     this.vel.add(this.gravity);
 
     this.vel.add(this.hitVelocity);
