@@ -12,9 +12,7 @@ class Ball {
     this.minX = this.radius;
     this.maxX = width - this.radius;
 
-    // Physics (position, velocity, acceleration)
-    // TODO: acceleration not currently used, delete
-    //  from final product if still unused
+    // Physics (position & velocity)
     this.pos = createVector(x, y);
     this.vel = createVector();
 
@@ -25,7 +23,7 @@ class Ball {
 
     // Magic number constant land:
     this.restitution = 0.8;
-    this.gravity = createVector(0, 0.3);
+    this.gravity = createVector(0, 0.3); // Applied as a velocity
     this.speedLimit = 17;
 
     // How hard does the user hit the ball?
@@ -35,32 +33,61 @@ class Ball {
     this.hitVelocity = createVector();
   }
 
-  clickEvent(clickX, clickY) {
+  checkHit(x, y) {
     // If hit is too high on ball, it will be ignored
-    const tooHigh = this.pos.y - clickY > this.radius * 0.8;
+    const tooHigh = this.pos.y - y > this.radius * 0.8;
 
-    const d = dist(this.pos.x, this.pos.y, clickX, clickY);
-    this.ballIsHit = d < this.radius && !tooHigh;
+    const d = dist(this.pos.x, this.pos.y, x, y);
+    const ballIsHit = d < this.radius && !tooHigh;
 
-    if (this.ballIsHit) {
-      this.hitCount += 1;
+    // d is being returned for a 'too close to center' check
+    return [ballIsHit, d];
+  }
 
+  hitAngle(x, y, d) {
+    let angle;
+
+    // How much to deviate from straight up when hit too close to center
+    const dAngle = 0.1;
+    const straightUp = -PI / 2;
+
+    // If hit too close to center: then direct mostly straight up
+    if (d < this.radius / 3) {
+      angle = random(straightUp - dAngle, straightUp + dAngle);
+    } else {
       // Find angle between click position and center of ball
-      let angle = -atan2(clickY - this.pos.y, clickX - this.pos.x);
+      angle = atan2(this.pos.y - y, this.pos.x - x);
+      // Restrict angle to be directed upwards
       angle = constrainAngle(angle, this.minAngle, this.maxAngle);
-
-      // If hit on ball is near the center, change angle to mostly straight up
-      if (d < this.radius / 3) {
-        const dAngle = 0.1; // How much to deviate from straight up
-        const straightUp = -PI / 2;
-
-        angle = random(straightUp - dAngle, straightUp + dAngle);
-      }
-
-      // Calc vector to apply force to ball using
-      this.hitVelocity.set(-this.hitMagnitude, 0);
-      this.hitVelocity.rotate(-angle);
     }
+
+    return angle;
+  }
+
+  hitBall(x, y) {
+    let d;
+    [this.ballIsHit, d] = this.checkHit(x, y);
+
+    // Exit if missed
+    if (!this.ballIsHit) return;
+
+    this.hitCount += 1;
+
+    // Calc vector to apply force to ball using
+    const angle = this.hitAngle(x, y, d);
+
+    this.hitVelocity.set(this.hitMagnitude, 0);
+    this.hitVelocity.rotate(angle);
+  }
+
+  wallBounce() {
+    if (this.pos.x >= this.maxX || this.pos.x <= this.minX) {
+      this.vel.x *= -this.restitution;
+    }
+  }
+
+  clickEvent(clickX, clickY) {
+    this.hitBall(clickX, clickY);
 
     // TODO: Delete me after debugging
     push();
@@ -84,12 +111,6 @@ class Ball {
     // Reset hit state after ball has been hit
     this.hitVelocity.set(0, 0);
     this.ballIsHit = false;
-  }
-
-  wallBounce() {
-    if (this.pos.x >= this.maxX || this.pos.x <= this.minX) {
-      this.vel.x *= -this.restitution;
-    }
   }
 
   draw() {
