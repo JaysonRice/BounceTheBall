@@ -37,7 +37,6 @@ class Ball {
     this.speed = speed;
     this.len = this.animation.length;
     this.frameIndex = 0;
-
   }
 
   checkHit(x, y) {
@@ -121,7 +120,7 @@ class Ball {
   }
 
   draw() {
-    let frameIndex = floor(this.frameIndex) % this.len
+    const frameIndex = floor(this.frameIndex) % this.len;
     image(this.animation[frameIndex], this.pos.x, this.pos.y, [100], [100]);
 
     push();
@@ -133,7 +132,7 @@ class Ball {
   }
 
   animate() {
-    this.frameIndex += this.speed
+    this.frameIndex += this.speed;
   }
 }
 
