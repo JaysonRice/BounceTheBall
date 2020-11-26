@@ -8,9 +8,8 @@ let animation = [];
 
 function preload() {
   // Image data to load for animated sprites
-  // Currently have ball2 or ball3 (Ball2 better to test rotation)
-  spritedata = loadJSON('src/images/ball2.json')
-  spritesheet = loadImage('src/images/ball2.png')
+  spritedata = loadJSON('src/images/ball.json')
+  spritesheet = loadImage('src/images/ball.png')
 }
 
 const displayScore = (score, x = width / 2, y = height / 2, txtSize = 200) => {
