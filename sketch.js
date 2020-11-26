@@ -1,6 +1,16 @@
 import Ball from './src/ball.js';
 
 let ball;
+let spritesheet;
+let spritedata;
+
+let animation = [];
+
+function preload() {
+  // Image data to load for animated sprites
+  spritedata = loadJSON('src/images/ball.json')
+  spritesheet = loadImage('src/images/ball.png')
+}
 
 const displayScore = (score, x = width / 2, y = height / 2, txtSize = 200) => {
   push();
@@ -14,6 +24,7 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 200) => {
 
   textSize(txtSize);
   textAlign(CENTER, CENTER);
+  text(ball.hitCount, width / 2, height / 2);
 
   text(score, x, y);
   pop();
@@ -21,7 +32,19 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 200) => {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  ball = new Ball(width / 2, 0, 50);
+
+  imageMode(CENTER)
+
+  let frames = spritedata.frames;
+  // Find the position of each sprite on the spritesheet to display
+  // One at a time
+  for (let i = 0; i < frames.length; i++) {
+    let pos = frames[i].position;
+    let img = spritesheet.get(pos.x, pos.y, pos.w, pos.h);
+
+    animation.push(img);
+  }
+  ball = new Ball(width / 2, 0, 50, animation, .15);
 }
 
 function mousePressed() {
@@ -37,6 +60,7 @@ function draw() {
   fill(255, 30);
 
   ball.draw();
+  ball.animate();
   ball.update();
 
   displayScore(ball.hitCount);
@@ -45,5 +69,6 @@ function draw() {
 window.mousePressed = mousePressed;
 window.touchStarted = touchStarted;
 
+window.preload = preload;
 window.setup = setup;
 window.draw = draw;
