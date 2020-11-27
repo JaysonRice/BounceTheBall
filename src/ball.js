@@ -1,7 +1,7 @@
 import constrainAngle from './helpers/constrainAngle.js';
 
 class Ball {
-  constructor(x, y, radius, animation, speed) {
+  constructor(x, y, radius, animation, animationSpeed) {
     // For scoring
     this.ballIsHit = false;
     this.hitCount = 0;
@@ -21,6 +21,11 @@ class Ball {
     this.minAngle = -PI * 0.65;
     this.maxAngle = -PI * 0.35;
 
+    this.angle = 0;
+    this.spinRate = 0;
+    this.minSpinRate = -0.1;
+    this.maxSpinRate = 0.1;
+
     // Magic number constant land:
     this.restitution = 0.8;
     this.gravity = createVector(0, 0.3); // Applied as a velocity
@@ -34,10 +39,8 @@ class Ball {
 
     // Animation (fps)
     this.animation = animation;
-    this.speed = speed;
-    this.len = this.animation.length;
+    this.animationSpeed = animationSpeed;
     this.frameIndex = 0;
-
   }
 
   checkHit(x, y) {
@@ -80,9 +83,12 @@ class Ball {
 
     this.hitCount += 1;
 
-    // Calc vector to apply force to ball using
     const angle = this.hitAngle(x, y, d);
 
+    // Convert angle of hit into a rotation angle
+    this.spinRate = map(angle, this.minAngle, this.maxAngle, this.minSpinRate, this.maxSpinRate);
+
+    // Calc vector to apply force to ball using
     this.hitVelocity.set(this.hitMagnitude, 0);
     this.hitVelocity.rotate(angle);
   }
@@ -106,6 +112,7 @@ class Ball {
   update() {
     // Bounce off side walls
     this.wallBounce();
+    this.angle += this.spinRate;
 
     // hitVelocity is only non-zero if user just successfully hit
     this.vel.add(this.hitVelocity);
@@ -121,19 +128,26 @@ class Ball {
   }
 
   draw() {
-    let frameIndex = floor(this.frameIndex) % this.len
-    image(this.animation[frameIndex], this.pos.x, this.pos.y, [100], [100]);
-
     push();
+    translate(this.pos.x, this.pos.y);
+    rotate(this.angle);
+
+    noStroke();
     if (this.ballIsHit) {
-      fill(0, 0, 255);
+      fill(100, 200);
+    } else {
+      fill(30);
     }
-    // ellipse(this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
+    ellipse(0, 0, this.radius * 2, this.radius * 2);
+
+    const frameIndex = floor(this.frameIndex) % this.animation.length;
+    image(this.animation[frameIndex], 0, 0, this.radius * 2, this.radius * 2);
+
     pop();
   }
 
   animate() {
-    this.frameIndex += this.speed
+    this.frameIndex += this.animationSpeed;
   }
 }
 
