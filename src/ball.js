@@ -115,12 +115,6 @@ class Ball {
 
   clickEvent(clickX, clickY) {
     this.hitBall(clickX, clickY);
-
-    // TODO: Delete me after debugging
-    push();
-    fill(255, 0, 0);
-    ellipse(clickX, clickY, 30, 30);
-    pop();
   }
 
   update() {
