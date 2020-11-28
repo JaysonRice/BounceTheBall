@@ -1,7 +1,7 @@
 import constrainAngle from './helpers/constrainAngle.js';
 
 class Ball {
-  constructor(x, y, radius, animation, animationSpeed) {
+  constructor(x, y, radius, animation, animationSpeed, hitSound) {
     // For scoring
     this.ballIsHit = false;
     this.hitCount = 0;
@@ -41,7 +41,11 @@ class Ball {
     this.animation = animation;
     this.animationSpeed = animationSpeed;
     this.frameIndex = 0;
+
+    // Audio for hitting ball
+    this.hitSound = hitSound;
   }
+
 
   checkHit(x, y) {
     // If hit is too high on ball, it will be ignored
@@ -56,7 +60,6 @@ class Ball {
 
   hitAngle(x, y, d) {
     let angle;
-
     // How much to deviate from straight up when hit too close to center
     const dAngle = 0.1;
     const straightUp = -PI / 2;
@@ -76,12 +79,14 @@ class Ball {
 
   hitBall(x, y) {
     let d;
+
     [this.ballIsHit, d] = this.checkHit(x, y);
 
     // Exit if missed
     if (!this.ballIsHit) return;
 
     this.hitCount += 1;
+    this.hitSound.play();
 
     const angle = this.hitAngle(x, y, d);
 
@@ -96,6 +101,7 @@ class Ball {
   wallBounce() {
     if (this.pos.x >= this.maxX || this.pos.x <= this.minX) {
       this.vel.x *= -this.restitution;
+      this.hitSound.play()
     }
   }
 
