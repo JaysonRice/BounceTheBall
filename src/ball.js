@@ -15,6 +15,7 @@ class Ball {
     // Physics (position & velocity)
     this.pos = createVector(x, y);
     this.vel = createVector();
+    this.acc = createVector();
 
     // Constrain angle to always be hitting the ball up
     // ie angleHit = constrain(angleHit, this.minAngle, this.maxAngle)
@@ -28,14 +29,13 @@ class Ball {
 
     // Magic number constant land:
     this.restitution = 0.8;
-    this.gravity = createVector(0, 0.3); // Applied as a velocity
+    this.gravity = createVector(0, 0.35);
     this.speedLimit = 17;
 
     // How hard does the user hit the ball?
-    // No f=ma stuff happening, just applied as a veloctiy (in pixels per frame)
     this.hitMagnitude = this.gravity.y * 100;
-    // For applying hitMagnitude to ball
-    this.hitVelocity = createVector();
+    // For applying hitMagnitude force to ball
+    this.hitForce = createVector();
 
     // Animation (fps)
     this.animation = animation;
@@ -44,6 +44,13 @@ class Ball {
 
     // Audio for hitting ball
     this.hitSound = hitSound;
+  }
+
+  applyForce(force) {
+    // f=ma
+    // assume mass of 1 to make math easier (revisit if needed)
+    // f=a; when m=1
+    this.acc.add(force);
   }
 
   checkHit(x, y) {
@@ -93,8 +100,10 @@ class Ball {
     this.spinRate = map(angle, this.minAngle, this.maxAngle, this.minSpinRate, this.maxSpinRate);
 
     // Calc vector to apply force to ball using
-    this.hitVelocity.set(this.hitMagnitude, 0);
-    this.hitVelocity.rotate(angle);
+    this.hitForce.set(this.hitMagnitude, 0);
+    this.hitForce.rotate(angle);
+
+    this.applyForce(this.hitForce);
   }
 
   wallBounce() {
@@ -119,16 +128,17 @@ class Ball {
     this.wallBounce();
     this.angle += this.spinRate;
 
-    // hitVelocity is only non-zero if user just successfully hit
-    this.vel.add(this.hitVelocity);
-    this.vel.add(this.gravity);
+    // hitForce will have been applied to acc in hitBall if hit occurred
+    this.applyForce(this.gravity);
+
+    this.vel.add(this.acc);
     this.vel.limit(this.speedLimit);
 
     this.pos.add(this.vel);
     this.pos.x = constrain(this.pos.x, this.minX, this.maxX);
 
     // Reset hit state after ball has been hit
-    this.hitVelocity.set(0, 0);
+    this.acc.set(0, 0);
     this.ballIsHit = false;
   }
 
