@@ -12,7 +12,7 @@ function preload() {
   spritedata = loadJSON('src/assets/images/ball.json');
   spritesheet = loadImage('src/assets/images/ball.png');
   hitSound = loadSound('src/assets/sounds/SoftHit.wav');
-  gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf')
+  gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf');
 }
 
 const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {

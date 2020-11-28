@@ -46,7 +46,6 @@ class Ball {
     this.hitSound = hitSound;
   }
 
-
   checkHit(x, y) {
     // If hit is too high on ball, it will be ignored
     const tooHigh = this.pos.y - y > this.radius * 0.8;
@@ -101,7 +100,7 @@ class Ball {
   wallBounce() {
     if (this.pos.x >= this.maxX || this.pos.x <= this.minX) {
       this.vel.x *= -this.restitution;
-      this.hitSound.play()
+      this.hitSound.play();
     }
   }
 
