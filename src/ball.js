@@ -151,6 +151,7 @@ class Ball {
 
     const frameIndex = floor(this.frameIndex) % this.animation.length;
     image(this.animation[frameIndex], 0, 0, this.radius * 2, this.radius * 2);
+    this.animate();
 
     pop();
   }

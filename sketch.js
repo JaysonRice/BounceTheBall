@@ -64,7 +64,6 @@ function draw() {
   fill(255, 30);
 
   ball.draw();
-  ball.animate();
   ball.update();
 
   displayScore(ball.hitCount);
