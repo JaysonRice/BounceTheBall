@@ -3,16 +3,19 @@ import Ball from './src/ball.js';
 let ball;
 let spritesheet;
 let spritedata;
+let hitSound;
+let gameFont;
 
 const animation = [];
 
 function preload() {
-  // Image data to load for animated sprites
-  spritedata = loadJSON('src/images/ball.json');
-  spritesheet = loadImage('src/images/ball.png');
+  spritedata = loadJSON('src/assets/images/ball.json');
+  spritesheet = loadImage('src/assets/images/ball.png');
+  hitSound = loadSound('src/assets/sounds/SoftHit.wav');
+  gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf')
 }
 
-const displayScore = (score, x = width / 2, y = height / 2, txtSize = 200) => {
+const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
   push();
 
   // These were the global settings when refactored
@@ -22,6 +25,7 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 200) => {
   stroke(0);
   strokeWeight(1);
 
+  textFont(gameFont);
   textSize(txtSize);
   textAlign(CENTER, CENTER);
   text(ball.hitCount, width / 2, height / 2);
@@ -44,7 +48,7 @@ function setup() {
 
     animation.push(img);
   }
-  ball = new Ball(width / 2, 0, 50, animation, 0.15);
+  ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
 }
 
 function mousePressed() {
