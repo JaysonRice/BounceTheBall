@@ -1,4 +1,21 @@
 import Ball from './src/ball.js';
+import { writeDynamoRecord, uuid } from './src/helpers/dynamoDB.js';
+
+AWS.config.region = 'us-east-1'; // Region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+  IdentityPoolId: 'us-east-1:a90822a4-fcf5-4a93-9e59-c94743e49040',
+});
+
+// TO STOP WRITES TO DB
+// TO STOP WRITES TO DB
+// TO STOP WRITES TO DB
+const DEBUG = false;
+
+const dynamodb = new AWS.DynamoDB();
+const docClient = new AWS.DynamoDB.DocumentClient();
+let userId;
+// TODO: have gameover event/restart screen handle this
+let scoreWritten = false;
 
 let ball;
 let spritesheet;
@@ -36,6 +53,7 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  userId = uuid();
 
   imageMode(CENTER);
 
@@ -67,6 +85,17 @@ function draw() {
   ball.update();
 
   displayScore(ball.hitCount);
+
+  // TODO: put this logic elsewhere
+  if (ball.pos.y - ball.radius > height && !scoreWritten && ball.hitCount > 0 && !DEBUG) {
+    const scoreRecord = {
+      userId,
+      score: ball.hitCount,
+      userName: 'JMR',
+    };
+    writeDynamoRecord(docClient, scoreRecord);
+    scoreWritten = true;
+  }
 }
 
 window.mousePressed = mousePressed;
