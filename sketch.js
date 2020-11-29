@@ -17,11 +17,13 @@ let userId;
 // TODO: have gameover event/restart screen handle this
 let scoreWritten = false;
 
-let ball;
+
+const balls = [];
 let spritesheet;
 let spritedata;
 let hitSound;
 let gameFont;
+let deadBallScore;
 
 const animation = [];
 
@@ -45,7 +47,6 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
   textFont(gameFont);
   textSize(txtSize);
   textAlign(CENTER, CENTER);
-  text(ball.hitCount, width / 2, height / 2);
 
   text(score, x, y);
   pop();
@@ -66,11 +67,12 @@ function setup() {
 
     animation.push(img);
   }
-  ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+  const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+  balls.push(ball);
 }
 
 function mousePressed() {
-  ball.clickEvent(mouseX, mouseY);
+  balls.forEach((ball) => ball.clickEvent(mouseX, mouseY));
 }
 
 function touchStarted() {
@@ -81,22 +83,45 @@ function draw() {
   background(25);
   fill(255, 30);
 
-  ball.draw();
-  ball.update();
+  balls.forEach(ball => {
+    ball.draw();
+    ball.update();
+  });
 
-  displayScore(ball.hitCount);
+  // Removing dead balls from the array
+  balls.filter((ball) => {
+    if (!ball.offScreen) return true;
 
-  // TODO: put this logic elsewhere
-  if (ball.pos.y - ball.radius > height && !scoreWritten && ball.hitCount > 0 && !DEBUG) {
-    const scoreRecord = {
-      userId,
-      score: ball.hitCount,
-      userName: 'JMR',
-    };
-    writeDynamoRecord(docClient, scoreRecord);
-    scoreWritten = true;
+    deadBallScore += ball.hitCount;
+    return false;
+  });
+
+  let totalScore = balls.reduce((accum, curr) => accum + curr.hitCount, 0);
+  // totalScore += deadBallScore
+
+  displayScore(totalScore);
+
+  if (totalScore % 10 === 0) {
+    const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+    balls.push(ball);
   }
 }
+
+
+
+// displayScore(ball.hitCount);
+
+// TODO: put this logic elsewhere and change logic to know if all balls are gone from array
+//   if (ball.pos.y - ball.radius > height && !scoreWritten && ball.hitCount > 0 && !DEBUG) {
+//     const scoreRecord = {
+//       userId,
+//       score: ball.hitCount,
+//       userName: 'JMR',
+//     };
+//     writeDynamoRecord(docClient, scoreRecord);
+//     scoreWritten = true;
+//   }
+// }
 
 window.mousePressed = mousePressed;
 window.touchStarted = touchStarted;

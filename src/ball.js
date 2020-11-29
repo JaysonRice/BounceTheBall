@@ -5,6 +5,7 @@ class Ball {
     // For scoring
     this.ballIsHit = false;
     this.hitCount = 0;
+    this.offScreen
 
     this.radius = radius;
 
