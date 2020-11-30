@@ -110,7 +110,6 @@ class Ball {
   wallBounce() {
     if (this.pos.x >= this.maxX || this.pos.x <= this.minX) {
       this.vel.x *= -this.restitution;
-      this.hitSound.play();
     }
   }
 

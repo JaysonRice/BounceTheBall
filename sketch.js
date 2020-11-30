@@ -1,4 +1,5 @@
 import Ball from './src/ball.js';
+import MultiBallPowerup from './src/multiball.js';
 import { writeDynamoRecord, uuid } from './src/helpers/dynamoDB.js';
 
 AWS.config.region = 'us-east-1'; // Region
@@ -17,8 +18,8 @@ let userId;
 // TODO: have gameover event/restart screen handle this
 let scoreWritten = false;
 
-
 const balls = [];
+let multiBallPowerup;
 let spritesheet;
 let spritedata;
 let hitSound;
@@ -68,15 +69,18 @@ function setup() {
     animation.push(img);
   }
   const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+  multiBallPowerup = new MultiBallPowerup(width / 3, height / 3, 50);
   balls.push(ball);
 }
 
 function mousePressed() {
   balls.forEach((ball) => ball.clickEvent(mouseX, mouseY));
+  multiBallPowerup.clickEvent(mouseX, mouseY)
 }
 
 function touchStarted() {
   mousePressed();
+  return false;
 }
 
 function draw() {
@@ -87,6 +91,15 @@ function draw() {
     ball.draw();
     ball.update();
   });
+
+  // Logic for handling multiball powerup
+  multiBallPowerup.draw();
+  if (multiBallPowerup.powerupIsHit) {
+    const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+    balls.push(ball);
+  }
+  multiBallPowerup.update()
+
 
   // Removing dead balls from the array
   balls.filter((ball) => {
@@ -101,13 +114,7 @@ function draw() {
 
   displayScore(totalScore);
 
-  if (totalScore % 10 === 0) {
-    const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
-    balls.push(ball);
-  }
 }
-
-
 
 // displayScore(ball.hitCount);
 
