@@ -5,7 +5,7 @@ class Ball {
     // For scoring
     this.ballIsHit = false;
     this.hitCount = 0;
-    this.offScreen
+    this.dead = false;
 
     this.radius = radius;
 
@@ -113,6 +113,12 @@ class Ball {
     }
   }
 
+  checkDeadBall() {
+    if (this.pos.y >= windowHeight + 100) {
+      this.dead = true;
+    }
+  }
+
   clickEvent(clickX, clickY) {
     this.hitBall(clickX, clickY);
   }
@@ -134,6 +140,9 @@ class Ball {
     // Reset hit state after ball has been hit
     this.acc.set(0, 0);
     this.ballIsHit = false;
+
+    // After a ball has dropped completely past the bottom, mark it as dead
+    this.checkDeadBall();
   }
 
   draw() {

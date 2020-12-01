@@ -24,7 +24,8 @@ let spritesheet;
 let spritedata;
 let hitSound;
 let gameFont;
-let deadBallScore;
+let totalScore = 0;
+let deadBallScore = 0;
 
 const animation = [];
 
@@ -102,33 +103,33 @@ function draw() {
 
 
   // Removing dead balls from the array
-  balls.filter((ball) => {
-    if (!ball.offScreen) return true;
-
-    deadBallScore += ball.hitCount;
-    return false;
-  });
+  for (let i = 0; i < balls.length; i++) {
+    if (balls[i].dead === true) {
+      deadBallScore += balls[i].hitCount;
+      balls.splice(i, 1)
+    }
+  }
 
   let totalScore = balls.reduce((accum, curr) => accum + curr.hitCount, 0);
-  // totalScore += deadBallScore
+  totalScore += deadBallScore
 
   displayScore(totalScore);
 
 }
 
-// displayScore(ball.hitCount);
-
 // TODO: put this logic elsewhere and change logic to know if all balls are gone from array
-//   if (ball.pos.y - ball.radius > height && !scoreWritten && ball.hitCount > 0 && !DEBUG) {
-//     const scoreRecord = {
-//       userId,
-//       score: ball.hitCount,
-//       userName: 'JMR',
-//     };
-//     writeDynamoRecord(docClient, scoreRecord);
-//     scoreWritten = true;
-//   }
-// }
+
+if (balls.length < 1 && !scoreWritten && totalScore > 0 && !DEBUG) {
+  const scoreRecord = {
+    userId,
+    score: ball.hitCount,
+    userName: 'JMR',
+  };
+  console.log("it worked")
+  writeDynamoRecord(docClient, scoreRecord);
+  scoreWritten = true;
+}
+
 
 window.mousePressed = mousePressed;
 window.touchStarted = touchStarted;
