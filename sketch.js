@@ -10,7 +10,7 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
 // TO STOP WRITES TO DB
 // TO STOP WRITES TO DB
 // TO STOP WRITES TO DB
-const DEBUG = false;
+const DEBUG = true;
 
 const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -19,7 +19,7 @@ let userId;
 let scoreWritten = false;
 
 const balls = [];
-let multiBallPowerup;
+let multiBallPowerup = null;
 let spritesheet;
 let spritedata;
 let hitSound;
@@ -70,13 +70,15 @@ function setup() {
     animation.push(img);
   }
   const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
-  multiBallPowerup = new MultiBallPowerup(width / 3, height / 3, 50);
+  multiBallPowerup = new MultiBallPowerup(200, 200, 200);
   balls.push(ball);
 }
 
 function mousePressed() {
   balls.forEach((ball) => ball.clickEvent(mouseX, mouseY));
-  multiBallPowerup.clickEvent(mouseX, mouseY)
+  if (multiBallPowerup) {
+    multiBallPowerup.clickEvent(mouseX, mouseY)
+  }
 }
 
 function touchStarted() {
@@ -94,12 +96,17 @@ function draw() {
   });
 
   // Logic for handling multiball powerup
-  multiBallPowerup.draw();
-  if (multiBallPowerup.powerupIsHit) {
-    const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
-    balls.push(ball);
+  if (multiBallPowerup) {
+    multiBallPowerup.draw()
+    multiBallPowerup.update()
+
+    if (multiBallPowerup.powerupIsHit) {
+      const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+      balls.push(ball);
+      multiBallPowerup = null
+    }
+
   }
-  multiBallPowerup.update()
 
 
   // Removing dead balls from the array
@@ -109,26 +116,27 @@ function draw() {
       balls.splice(i, 1)
     }
   }
-
-  let totalScore = balls.reduce((accum, curr) => accum + curr.hitCount, 0);
+  totalScore = balls.reduce((accum, curr) => accum + curr.hitCount, 0);
   totalScore += deadBallScore
 
   displayScore(totalScore);
 
+  // TODO: put this logic elsewhere and change logic to know if all balls are gone from array
+
+  if (balls.length < 1 && !scoreWritten && totalScore > 0 && !DEBUG) {
+    const scoreRecord = {
+      userId,
+      score: totalScore,
+      userName: 'JMR',
+    };
+    console.log("it worked")
+    writeDynamoRecord(docClient, scoreRecord);
+    scoreWritten = true;
+  }
+
 }
 
-// TODO: put this logic elsewhere and change logic to know if all balls are gone from array
 
-if (balls.length < 1 && !scoreWritten && totalScore > 0 && !DEBUG) {
-  const scoreRecord = {
-    userId,
-    score: ball.hitCount,
-    userName: 'JMR',
-  };
-  console.log("it worked")
-  writeDynamoRecord(docClient, scoreRecord);
-  scoreWritten = true;
-}
 
 
 window.mousePressed = mousePressed;

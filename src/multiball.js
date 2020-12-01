@@ -35,7 +35,9 @@ class MultiBallPowerup {
     }
 
     update() {
-        this.powerupIsHit = false;
+        // Make the powerup move here
+        this.pos.x = 200;
+        this.pos.y = 200;
     }
 
 }
