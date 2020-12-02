@@ -36,8 +36,7 @@ class MultiBallPowerup {
 
     update() {
         // Make the powerup move here
-        this.pos.x = 200;
-        this.pos.y = 200;
+        this.pos.y = this.pos.y + 3;
     }
 
 }
