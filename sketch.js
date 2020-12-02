@@ -55,11 +55,10 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
   pop();
 };
 
-
 // TODO: Would like to make it score based at some point / magic number the radius and positions?
 const spawnPowerup = () => {
   // If there isn't currently a powerup on screen, spawn one exery X frames
-  if (frameCount % 300 === 0 && !multiBallPowerup) {
+  if (frameCount % 350 === 0 && !multiBallPowerup) {
     multiBallPowerup = new MultiBallPowerup(random(30, width - 30), 0 - 15, 30)
   }
   if (multiBallPowerup) {
@@ -76,7 +75,6 @@ const spawnPowerup = () => {
       multiBallPowerup = null
     }
   }
-
 }
 
 function setup() {
@@ -120,24 +118,7 @@ function draw() {
   });
 
   // Logic for handling multiball powerup
-  // TODO: Move this logic outside of draw?
   spawnPowerup()
-
-
-  // if (multiBallPowerup) {
-  //   multiBallPowerup.draw()
-  //   multiBallPowerup.update()
-  //   // If the powerup is hit, spawn a new ball and remove the powerup
-  //   if (multiBallPowerup.powerupIsHit) {
-  //     const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
-  //     balls.push(ball);
-  //     multiBallPowerup = null
-  //   }
-  //   // If the powerup leaves the screen off the bottom, remove it
-  //   if (multiBallPowerup && multiBallPowerup.pos.y > height + multiBallPowerup.radius) {
-  //     multiBallPowerup = null
-  //   }
-  // }
 
   // Removing dead balls from the array
   for (let i = 0; i < balls.length; i++) {
@@ -152,7 +133,6 @@ function draw() {
   displayScore(totalScore);
 
   // TODO: put this logic elsewhere and change logic to know if all balls are gone from array
-
   if (balls.length < 1 && !scoreWritten && totalScore > 0 && !DEBUG) {
     const scoreRecord = {
       userId,

@@ -1,4 +1,5 @@
 class MultiBallPowerup {
+    // TODO: Add animation and sound effect for getting powerup
     constructor(x, y, radius) {
         this.powerupIsHit = false;
         this.radius = radius;
@@ -14,7 +15,6 @@ class MultiBallPowerup {
     }
 
     getPower(x, y) {
-
         const d = dist(this.pos.x, this.pos.y, x, y);
         this.powerupIsHit = d < this.radius;
 
@@ -22,7 +22,6 @@ class MultiBallPowerup {
         if (!this.powerupIsHit) return;
 
         // Play sound here
-        // this.hitSound.play();
     }
 
     clickEvent(clickX, clickY) {
@@ -35,7 +34,6 @@ class MultiBallPowerup {
     }
 
     update() {
-        // Make the powerup move here
         this.pos.y = this.pos.y + 3;
     }
 
