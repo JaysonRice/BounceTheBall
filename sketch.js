@@ -1,4 +1,5 @@
 import Ball from './src/ball.js';
+import MultiBallPowerup from './src/multiball.js';
 import { writeDynamoRecord, uuid } from './src/helpers/dynamoDB.js';
 
 AWS.config.region = 'us-east-1'; // Region
@@ -9,7 +10,7 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
 // TO STOP WRITES TO DB
 // TO STOP WRITES TO DB
 // TO STOP WRITES TO DB
-const DEBUG = false;
+const DEBUG = true;
 
 const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -17,12 +18,16 @@ let userId;
 // TODO: have gameover event/restart screen handle this
 let scoreWritten = false;
 
-let ball;
+const balls = [];
+let multiBallPowerup = null;
+
+let totalScore = 0;
+let deadBallScore = 0;
+
 let spritesheet;
 let spritedata;
 let hitSound;
 let gameFont;
-
 const animation = [];
 
 function preload() {
@@ -45,11 +50,32 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
   textFont(gameFont);
   textSize(txtSize);
   textAlign(CENTER, CENTER);
-  text(ball.hitCount, width / 2, height / 2);
 
   text(score, x, y);
   pop();
 };
+
+// TODO: Would like to make it score based at some point / magic number the radius and positions?
+const spawnPowerup = () => {
+  // If there isn't currently a powerup on screen, spawn one exery X frames
+  if (frameCount % 350 === 0 && !multiBallPowerup) {
+    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), 0 - 15, 30)
+  }
+  if (multiBallPowerup) {
+    multiBallPowerup.draw()
+    multiBallPowerup.update()
+    // If the powerup is hit, spawn a new ball and remove the powerup
+    if (multiBallPowerup.powerupIsHit) {
+      const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+      balls.push(ball);
+      multiBallPowerup = null
+    }
+    // If the powerup leaves the screen off the bottom, remove it
+    if (multiBallPowerup && multiBallPowerup.pos.y > height + multiBallPowerup.radius) {
+      multiBallPowerup = null
+    }
+  }
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -66,33 +92,54 @@ function setup() {
 
     animation.push(img);
   }
-  ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+  const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+  balls.push(ball);
 }
 
 function mousePressed() {
-  ball.clickEvent(mouseX, mouseY);
+  balls.forEach((ball) => ball.clickEvent(mouseX, mouseY));
+  if (multiBallPowerup) {
+    multiBallPowerup.clickEvent(mouseX, mouseY)
+  }
 }
 
 function touchStarted() {
   mousePressed();
+  return false;
 }
 
 function draw() {
   background(25);
   fill(255, 30);
 
-  ball.draw();
-  ball.update();
+  balls.forEach(ball => {
+    ball.draw();
+    ball.update();
+  });
 
-  displayScore(ball.hitCount);
+  // Logic for handling multiball powerup
+  spawnPowerup()
 
-  // TODO: put this logic elsewhere
-  if (ball.pos.y - ball.radius > height && !scoreWritten && ball.hitCount > 0 && !DEBUG) {
+  // Removing dead balls from the array
+  for (let i = 0; i < balls.length; i++) {
+    if (balls[i].dead === true) {
+      deadBallScore += balls[i].hitCount;
+      balls.splice(i, 1)
+    }
+  }
+  totalScore = balls.reduce((accum, curr) => accum + curr.hitCount, 0);
+  totalScore += deadBallScore
+
+  displayScore(totalScore);
+
+  // TODO: put this logic elsewhere and change logic to know if all balls are gone from array
+  if (balls.length < 1 && !scoreWritten && totalScore > 0 && !DEBUG) {
     const scoreRecord = {
       userId,
-      score: ball.hitCount,
+      score: totalScore,
       userName: 'JMR',
     };
+    console.log("it worked")
     writeDynamoRecord(docClient, scoreRecord);
     scoreWritten = true;
   }
