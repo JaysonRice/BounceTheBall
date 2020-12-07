@@ -30,13 +30,18 @@ let deadBallScore = 0;
 
 let spritesheet;
 let spritedata;
+let spritedataStar;
+let spritesheetStar;
 let hitSound;
 let gameFont;
 const animation = [];
+const animationStar = [];
 
 function preload() {
   spritedata = loadJSON('src/assets/images/ball.json');
   spritesheet = loadImage('src/assets/images/ball.png');
+  spritedataStar = loadJSON('src/assets/images/star.json');
+  spritesheetStar = loadImage('src/assets/images/star.png');
   hitSound = loadSound('src/assets/sounds/SoftHit.wav');
   gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf');
 }
@@ -60,9 +65,20 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
 };
 
 const spawnPowerup = () => {
+
+  imageMode(CENTER);
+
+  const { frames } = spritedataStar;
+  for (let i = 0; i < frames.length; i += 1) {
+    const pos = frames[i].position;
+    const img = spritesheetStar.get(pos.x, pos.y, pos.w, pos.h);
+
+    animationStar.push(img);
+  }
+
   // If there isn't currently a powerup on screen, spawn one every X frames
   if (totalScore % powerupSpawnScore === 0 && totalScore !== 0 && powerupResolved && !multiBallPowerup) {
-    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), -multiBallRadius / 2, multiBallRadius)
+    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), -multiBallRadius / 2, multiBallRadius, animationStar, 0.15)
   }
 
   // Logic to stop powerups from spawning as soon as they disappear
@@ -85,8 +101,6 @@ const spawnPowerup = () => {
     if (multiBallPowerup && multiBallPowerup.pos.y > height + multiBallPowerup.radius) {
       multiBallPowerup = null
     }
-
-
   }
 }
 
