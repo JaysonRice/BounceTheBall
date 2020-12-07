@@ -34,7 +34,7 @@ class MultiBallPowerup extends ClickableObject {
     }
 
     update() {
-        this.pos.y = this.pos.y + 4;
+        this.pos.y = this.pos.y + 3;
     }
 
     animate() {
