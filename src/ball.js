@@ -1,12 +1,12 @@
 import constrainAngle from './helpers/constrainAngle.js';
 import ClickableObject from './clickableObject.js';
 
-class Ball {
+class Ball extends ClickableObject {
   constructor(x, y, radius, animation, animationSpeed, hitSound) {
 
     // Inherits properties all clickable objects need
     // pos.x/pos.y/radius/animation/animationSpeed/frameIndex/hitSound
-    ClickableObject.call(this, x, y, radius, animation, animationSpeed, hitSound)
+    super(x, y, radius, animation, animationSpeed, hitSound);
 
     // Physics (position & velocity)
     this.vel = createVector();
@@ -80,7 +80,7 @@ class Ball {
     return angle;
   }
 
-  hitBall(x, y) {
+  hit(x, y) {
     let d;
 
     [this.ballIsHit, d] = this.checkHit(x, y);
@@ -113,10 +113,6 @@ class Ball {
     if (this.pos.y >= windowHeight + 100) {
       this.dead = true;
     }
-  }
-
-  clickEvent(clickX, clickY) {
-    this.hitBall(clickX, clickY);
   }
 
   update() {
