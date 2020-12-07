@@ -9,7 +9,6 @@ class MultiBallPowerup {
         ClickableObject.call(this, x, y, radius, animation, animationSpeed, hitSound)
 
         this.powerupIsHit = false;
-
     }
 
     getPower(x, y) {
@@ -32,7 +31,7 @@ class MultiBallPowerup {
     }
 
     update() {
-        this.pos.y = this.pos.y + 3;
+        this.pos.y = this.pos.y + 4;
     }
 
 }
