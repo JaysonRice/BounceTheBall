@@ -1,22 +1,25 @@
 import constrainAngle from './helpers/constrainAngle.js';
+import ClickableObject from './clickableObject.js';
 
-class Ball {
+class Ball extends ClickableObject {
   constructor(x, y, radius, animation, animationSpeed, hitSound) {
+
+    // Inherits properties all clickable objects need
+    // pos.x/pos.y/radius/animation/animationSpeed/frameIndex/hitSound
+    super(x, y, radius, animation, animationSpeed, hitSound);
+
+    // Physics (position & velocity)
+    this.vel = createVector();
+    this.acc = createVector();
+
     // For scoring
     this.ballIsHit = false;
     this.hitCount = 0;
     this.dead = false;
 
-    this.radius = radius;
-
     // For detecting if edge of ball off screen in X dir
     this.minX = this.radius;
     this.maxX = width - this.radius;
-
-    // Physics (position & velocity)
-    this.pos = createVector(x, y);
-    this.vel = createVector();
-    this.acc = createVector();
 
     // Constrain angle to always be hitting the ball up
     // ie angleHit = constrain(angleHit, this.minAngle, this.maxAngle)
@@ -38,13 +41,6 @@ class Ball {
     // For applying hitMagnitude force to ball
     this.hitForce = createVector();
 
-    // Animation (fps)
-    this.animation = animation;
-    this.animationSpeed = animationSpeed;
-    this.frameIndex = 0;
-
-    // Audio for hitting ball
-    this.hitSound = hitSound;
   }
 
   applyForce(force) {
@@ -84,7 +80,7 @@ class Ball {
     return angle;
   }
 
-  hitBall(x, y) {
+  hit(x, y) {
     let d;
 
     [this.ballIsHit, d] = this.checkHit(x, y);
@@ -117,10 +113,6 @@ class Ball {
     if (this.pos.y >= windowHeight + 100) {
       this.dead = true;
     }
-  }
-
-  clickEvent(clickX, clickY) {
-    this.hitBall(clickX, clickY);
   }
 
   update() {

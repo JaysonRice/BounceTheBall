@@ -1,20 +1,18 @@
-class MultiBallPowerup {
+import ClickableObject from './clickableObject.js';
+
+class MultiBallPowerup extends ClickableObject {
     // TODO: Add animation and sound effect for getting powerup
-    constructor(x, y, radius) {
+    constructor(x, y, radius, animation, animationSpeed, hitSound) {
+
+        // Inherits properties all clickable objects need
+        // pos.x/pos.y/radius/animation/animationSpeed/frameIndex/hitSound
+        super(x, y, radius, animation, animationSpeed, hitSound);
+
         this.powerupIsHit = false;
-        this.radius = radius;
 
-        // Physics (position & velocity)
-        this.pos = createVector(x, y);
-        this.vel = createVector();
-
-        // Magic number constant land:
-        this.restitution = 0.8;
-        this.gravity = createVector(0, 0.35);
-        this.speedLimit = 17;
     }
 
-    getPower(x, y) {
+    hit(x, y) {
         const d = dist(this.pos.x, this.pos.y, x, y);
         this.powerupIsHit = d < this.radius;
 
@@ -22,10 +20,6 @@ class MultiBallPowerup {
         if (!this.powerupIsHit) return;
 
         // Play sound here
-    }
-
-    clickEvent(clickX, clickY) {
-        this.getPower(clickX, clickY);
     }
 
     draw() {

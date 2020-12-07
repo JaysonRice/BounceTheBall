@@ -20,6 +20,7 @@ let scoreWritten = false;
 
 const balls = [];
 let multiBallPowerup = null;
+let multiBallRadius = 30;
 
 let totalScore = 0;
 let deadBallScore = 0;
@@ -59,7 +60,7 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
 const spawnPowerup = () => {
   // If there isn't currently a powerup on screen, spawn one exery X frames
   if (frameCount % 350 === 0 && !multiBallPowerup) {
-    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), 0 - 15, 30)
+    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), -multiBallRadius / 2, multiBallRadius)
   }
   if (multiBallPowerup) {
     multiBallPowerup.draw()
