@@ -1,0 +1,31 @@
+{
+	"frames": [
+		{
+			"name": "Star1.png",
+			"position": {
+				"x": 1,
+				"y": 1,
+				"w": 100,
+				"h": 100
+			}
+		},
+		{
+			"name": "Star2.png",
+			"position": {
+				"x": 103,
+				"y": 1,
+				"w": 100,
+				"h": 100
+			}
+		},
+		{
+			"name": "Star3.png",
+			"position": {
+				"x": 1,
+				"y": 103,
+				"w": 100,
+				"h": 100
+			}
+		}
+	]
+}

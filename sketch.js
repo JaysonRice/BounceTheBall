@@ -19,22 +19,32 @@ let userId;
 let scoreWritten = false;
 
 const balls = [];
+
+const powerupSpawnScore = 10;
+const multiBallRadius = 30;
 let multiBallPowerup = null;
-let multiBallRadius = 30;
+let powerupResolved = true;
 
 let totalScore = 0;
 let deadBallScore = 0;
 
 let spritesheet;
 let spritedata;
+let spritedataStar;
+let spritesheetStar;
 let hitSound;
+let powerupSound;
 let gameFont;
 const animation = [];
+const animationStar = [];
 
 function preload() {
   spritedata = loadJSON('src/assets/images/ball.json');
   spritesheet = loadImage('src/assets/images/ball.png');
+  spritedataStar = loadJSON('src/assets/images/star.json');
+  spritesheetStar = loadImage('src/assets/images/star.png');
   hitSound = loadSound('src/assets/sounds/SoftHit.wav');
+  powerupSound = loadSound('src/assets/sounds/PowerUp.wav');
   gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf');
 }
 
@@ -56,12 +66,30 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
   pop();
 };
 
-// TODO: Would like to make it score based at some point / magic number the radius and positions?
 const spawnPowerup = () => {
-  // If there isn't currently a powerup on screen, spawn one exery X frames
-  if (frameCount % 350 === 0 && !multiBallPowerup) {
-    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), -multiBallRadius / 2, multiBallRadius)
+
+  imageMode(CENTER);
+
+  const { frames } = spritedataStar;
+  for (let i = 0; i < frames.length; i += 1) {
+    const pos = frames[i].position;
+    const img = spritesheetStar.get(pos.x, pos.y, pos.w, pos.h);
+
+    animationStar.push(img);
   }
+
+  // If there isn't currently a powerup on screen, spawn one every X frames
+  if (totalScore % powerupSpawnScore === 0 && totalScore !== 0 && powerupResolved && !multiBallPowerup) {
+    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), -multiBallRadius / 2, multiBallRadius, animationStar, 0.15, powerupSound)
+  }
+
+  // Logic to stop powerups from spawning as soon as they disappear
+  if (totalScore % powerupSpawnScore === 0) {
+    powerupResolved = false
+  } else {
+    powerupResolved = true
+  }
+
   if (multiBallPowerup) {
     multiBallPowerup.draw()
     multiBallPowerup.update()

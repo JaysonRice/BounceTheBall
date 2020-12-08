@@ -9,7 +9,6 @@ class MultiBallPowerup extends ClickableObject {
         super(x, y, radius, animation, animationSpeed, hitSound);
 
         this.powerupIsHit = false;
-
     }
 
     hit(x, y) {
@@ -19,16 +18,28 @@ class MultiBallPowerup extends ClickableObject {
         // Exit if missed
         if (!this.powerupIsHit) return;
 
-        // Play sound here
+        // Audio for clicking powerup
+        this.hitSound.play();
     }
 
     draw() {
+        push()
         fill(100, 200);
-        ellipse(this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
+
+        translate(this.pos.x, this.pos.y);
+
+        const frameIndex = floor(this.frameIndex) % this.animation.length;
+        image(this.animation[frameIndex], 0, 0, this.radius * 2, this.radius * 2);
+        this.animate()
+        pop()
     }
 
     update() {
         this.pos.y = this.pos.y + 3;
+    }
+
+    animate() {
+        this.frameIndex += this.animationSpeed;
     }
 
 }
