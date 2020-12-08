@@ -3,7 +3,6 @@ import ClickableObject from './clickableObject.js';
 
 class Ball extends ClickableObject {
   constructor(x, y, radius, animation, animationSpeed, hitSound) {
-
     // Inherits properties all clickable objects need
     // pos.x/pos.y/radius/animation/animationSpeed/frameIndex/hitSound
     super(x, y, radius, animation, animationSpeed, hitSound);
@@ -40,7 +39,6 @@ class Ball extends ClickableObject {
     this.hitMagnitude = this.gravity.y * 100;
     // For applying hitMagnitude force to ball
     this.hitForce = createVector();
-
   }
 
   applyForce(force) {
