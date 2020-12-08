@@ -18,7 +18,8 @@ class MultiBallPowerup extends ClickableObject {
         // Exit if missed
         if (!this.powerupIsHit) return;
 
-        // Play sound here
+        // Audio for clicking powerup
+        this.hitSound.play();
     }
 
     draw() {
