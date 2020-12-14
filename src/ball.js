@@ -11,10 +11,11 @@ class Ball extends ClickableObject {
     this.vel = createVector();
     this.acc = createVector();
 
-    // For scoring
+    // For scoring & game state mgmt
     this.ballIsHit = false;
     this.hitCount = 0;
     this.dead = false;
+    this.frozen = false;
 
     // For detecting if edge of ball off screen in X dir
     this.minX = this.radius;
@@ -86,6 +87,7 @@ class Ball extends ClickableObject {
     // Exit if missed
     if (!this.ballIsHit) return;
 
+    this.frozen = false;
     this.hitCount += 1;
     this.hitSound.play();
 
@@ -114,6 +116,8 @@ class Ball extends ClickableObject {
   }
 
   update() {
+    if (this.frozen) return;
+
     // Bounce off side walls
     this.wallBounce();
     this.angle += this.spinRate;

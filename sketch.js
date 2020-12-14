@@ -16,7 +16,7 @@ const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 let userId;
 // TODO: have gameover event/restart screen handle this
-let scoreWritten = false;
+const scoreWritten = false;
 
 const balls = [];
 
@@ -27,22 +27,25 @@ let powerupResolved = true;
 
 let totalScore = 0;
 let deadBallScore = 0;
+let sessionBestScore = 0;
 
-let spritesheet;
-let spritedata;
-let spritedataStar;
-let spritesheetStar;
+let spriteDataBall;
+let spriteSheetBall;
+let animationBall;
+
+let spriteDataStar;
+let spriteSheetStar;
+let animationStar;
+
 let hitSound;
 let powerupSound;
 let gameFont;
-const animation = [];
-const animationStar = [];
 
 function preload() {
-  spritedata = loadJSON('src/assets/images/ball.json');
-  spritesheet = loadImage('src/assets/images/ball.png');
-  spritedataStar = loadJSON('src/assets/images/star.json');
-  spritesheetStar = loadImage('src/assets/images/star.png');
+  spriteDataBall = loadJSON('src/assets/images/ball.json');
+  spriteSheetBall = loadImage('src/assets/images/ball.png');
+  spriteDataStar = loadJSON('src/assets/images/star.json');
+  spriteSheetStar = loadImage('src/assets/images/star.png');
   hitSound = loadSound('src/assets/sounds/SoftHit.wav');
   powerupSound = loadSound('src/assets/sounds/PowerUp.wav');
   gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf');
@@ -51,9 +54,6 @@ function preload() {
 const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
   push();
 
-  // These were the global settings when refactored
-  // moved into here to isolate from global settings
-  // (i.e. potentially redundant but feels safer).
   fill(255, 30);
   stroke(0);
   strokeWeight(1);
@@ -66,20 +66,53 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
   pop();
 };
 
+const displayBestScore = (score, x = 10, txtSize = 30) => {
+  if (score === 0) return;
+
+  push();
+
+  fill(255, 30);
+  // stroke(0);
+  strokeWeight(1);
+
+  textFont(gameFont);
+  textSize(txtSize);
+  textAlign(LEFT);
+
+  text(`Best: ${score}`, x, txtSize + x);
+  pop();
+};
+
+const readSpriteSheet = (spriteSheet, spriteData) => {
+  const { frames } = spriteData;
+  const animation = [];
+  for (let i = 0; i < frames.length; i += 1) {
+    const pos = frames[i].position;
+    const img = spriteSheet.get(pos.x, pos.y, pos.w, pos.h);
+    animation.push(img);
+  }
+
+  return animation;
+};
+
 const spawnPowerup = () => {
   imageMode(CENTER);
 
-  const { frames } = spritedataStar;
-  for (let i = 0; i < frames.length; i += 1) {
-    const pos = frames[i].position;
-    const img = spritesheetStar.get(pos.x, pos.y, pos.w, pos.h);
-
-    animationStar.push(img);
-  }
-
   // If there isn't currently a powerup on screen, spawn one every X frames
-  if (totalScore % powerupSpawnScore === 0 && totalScore !== 0 && powerupResolved && !multiBallPowerup) {
-    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), -multiBallRadius / 2, multiBallRadius, animationStar, 0.15, powerupSound);
+  if (
+    totalScore % powerupSpawnScore === 0
+    && totalScore !== 0
+    && powerupResolved
+    && !multiBallPowerup
+  ) {
+    multiBallPowerup = new MultiBallPowerup(
+      random(30, width - 30),
+      -multiBallRadius / 2,
+      multiBallRadius,
+      animationStar,
+      0.15,
+      powerupSound,
+    );
   }
 
   // Logic to stop powerups from spawning as soon as they disappear
@@ -94,7 +127,7 @@ const spawnPowerup = () => {
     multiBallPowerup.update();
     // If the powerup is hit, spawn a new ball and remove the powerup
     if (multiBallPowerup.powerupIsHit) {
-      const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
+      const ball = new Ball(width / 2, 0, 50, animationBall, 0.15, hitSound);
       balls.push(ball);
       multiBallPowerup = null;
     }
@@ -105,23 +138,31 @@ const spawnPowerup = () => {
   }
 };
 
+const resetGame = () => {
+  const ball = new Ball(width / 2, height * (3 / 4), 50, animationBall, 0.15, hitSound);
+  ball.frozen = true;
+
+  if (totalScore > sessionBestScore) {
+    sessionBestScore = totalScore;
+  }
+
+  totalScore = 0;
+  deadBallScore = 0;
+
+  balls.splice(0, balls.length);
+  balls.push(ball);
+};
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   userId = uuid();
 
   imageMode(CENTER);
 
-  const { frames } = spritedata;
-  // Find the position of each sprite on the spritesheet to display
-  // One at a time
-  for (let i = 0; i < frames.length; i += 1) {
-    const pos = frames[i].position;
-    const img = spritesheet.get(pos.x, pos.y, pos.w, pos.h);
+  animationBall = readSpriteSheet(spriteSheetBall, spriteDataBall);
+  animationStar = readSpriteSheet(spriteSheetStar, spriteDataStar);
 
-    animation.push(img);
-  }
-  const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
-  balls.push(ball);
+  resetGame();
 }
 
 function mousePressed() {
@@ -140,6 +181,16 @@ function draw() {
   background(25);
   fill(255, 30);
 
+  if (balls.length === 1 && balls[0].frozen) {
+    push();
+    textAlign(CENTER);
+    textSize(50);
+    text('Bounce\nthe Ball', width / 2, height / 4);
+    pop();
+
+    displayBestScore(sessionBestScore);
+  }
+
   balls.forEach((ball) => {
     ball.draw();
     ball.update();
@@ -149,7 +200,7 @@ function draw() {
   spawnPowerup();
 
   // Removing dead balls from the array
-  for (let i = 0; i < balls.length; i++) {
+  for (let i = 0; i < balls.length; i += 1) {
     if (balls[i].dead === true) {
       deadBallScore += balls[i].hitCount;
       balls.splice(i, 1);
@@ -161,15 +212,18 @@ function draw() {
   displayScore(totalScore);
 
   // TODO: put this logic elsewhere and change logic to know if all balls are gone from array
-  if (balls.length < 1 && !scoreWritten && totalScore > 0 && !DEBUG) {
-    const scoreRecord = {
-      userId,
-      score: totalScore,
-      userName: 'JMR',
-    };
-    console.log('it worked');
-    writeDynamoRecord(docClient, scoreRecord);
-    scoreWritten = true;
+  if (balls.length < 1) {
+    resetGame();
+    // if (!scoreWritten && totalScore > 0 && !DEBUG) {
+    //   const scoreRecord = {
+    //     userId,
+    //     score: totalScore,
+    //     userName: 'JMR',
+    //   };
+    //   console.log('it worked');
+    //   writeDynamoRecord(docClient, scoreRecord);
+    //   scoreWritten = true;
+    // }
   }
 }
 
