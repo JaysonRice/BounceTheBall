@@ -67,7 +67,6 @@ const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
 };
 
 const spawnPowerup = () => {
-
   imageMode(CENTER);
 
   const { frames } = spritedataStar;
@@ -80,31 +79,31 @@ const spawnPowerup = () => {
 
   // If there isn't currently a powerup on screen, spawn one every X frames
   if (totalScore % powerupSpawnScore === 0 && totalScore !== 0 && powerupResolved && !multiBallPowerup) {
-    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), -multiBallRadius / 2, multiBallRadius, animationStar, 0.15, powerupSound)
+    multiBallPowerup = new MultiBallPowerup(random(30, width - 30), -multiBallRadius / 2, multiBallRadius, animationStar, 0.15, powerupSound);
   }
 
   // Logic to stop powerups from spawning as soon as they disappear
   if (totalScore % powerupSpawnScore === 0) {
-    powerupResolved = false
+    powerupResolved = false;
   } else {
-    powerupResolved = true
+    powerupResolved = true;
   }
 
   if (multiBallPowerup) {
-    multiBallPowerup.draw()
-    multiBallPowerup.update()
+    multiBallPowerup.draw();
+    multiBallPowerup.update();
     // If the powerup is hit, spawn a new ball and remove the powerup
     if (multiBallPowerup.powerupIsHit) {
       const ball = new Ball(width / 2, 0, 50, animation, 0.15, hitSound);
       balls.push(ball);
-      multiBallPowerup = null
+      multiBallPowerup = null;
     }
     // If the powerup leaves the screen off the bottom, remove it
     if (multiBallPowerup && multiBallPowerup.pos.y > height + multiBallPowerup.radius) {
-      multiBallPowerup = null
+      multiBallPowerup = null;
     }
   }
-}
+};
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -128,7 +127,7 @@ function setup() {
 function mousePressed() {
   balls.forEach((ball) => ball.clickEvent(mouseX, mouseY));
   if (multiBallPowerup) {
-    multiBallPowerup.clickEvent(mouseX, mouseY)
+    multiBallPowerup.clickEvent(mouseX, mouseY);
   }
 }
 
@@ -141,23 +140,23 @@ function draw() {
   background(25);
   fill(255, 30);
 
-  balls.forEach(ball => {
+  balls.forEach((ball) => {
     ball.draw();
     ball.update();
   });
 
   // Logic for handling multiball powerup
-  spawnPowerup()
+  spawnPowerup();
 
   // Removing dead balls from the array
   for (let i = 0; i < balls.length; i++) {
     if (balls[i].dead === true) {
       deadBallScore += balls[i].hitCount;
-      balls.splice(i, 1)
+      balls.splice(i, 1);
     }
   }
   totalScore = balls.reduce((accum, curr) => accum + curr.hitCount, 0);
-  totalScore += deadBallScore
+  totalScore += deadBallScore;
 
   displayScore(totalScore);
 
@@ -168,7 +167,7 @@ function draw() {
       score: totalScore,
       userName: 'JMR',
     };
-    console.log("it worked")
+    console.log('it worked');
     writeDynamoRecord(docClient, scoreRecord);
     scoreWritten = true;
   }
