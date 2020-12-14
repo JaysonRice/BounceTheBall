@@ -151,6 +151,7 @@ const resetGame = () => {
 
   balls.splice(0, balls.length);
   balls.push(ball);
+  multiBallPowerup = null;
 };
 
 function setup() {
