@@ -1,45 +1,47 @@
 import ClickableObject from './clickableObject.js';
 
 class MultiBallPowerup extends ClickableObject {
-  // TODO: Add animation and sound effect for getting powerup
-  constructor(x, y, radius, animation, animationSpeed, hitSound) {
-    // Inherits properties all clickable objects need
-    // pos.x/pos.y/radius/animation/animationSpeed/frameIndex/hitSound
-    super(x, y, radius, animation, animationSpeed, hitSound);
+    // TODO: Add animation and sound effect for getting powerup
+    constructor(x, y, radius, animation, animationSpeed, hitSound) {
 
-    this.powerupIsHit = false;
-  }
+        // Inherits properties all clickable objects need
+        // pos.x/pos.y/radius/animation/animationSpeed/frameIndex/hitSound
+        super(x, y, radius, animation, animationSpeed, hitSound);
 
-  hit(x, y) {
-    const d = dist(this.pos.x, this.pos.y, x, y);
-    this.powerupIsHit = d < this.radius;
+        this.powerupIsHit = false;
+    }
 
-    // Exit if missed
-    if (!this.powerupIsHit) return;
+    hit(x, y) {
+        const d = dist(this.pos.x, this.pos.y, x, y);
+        this.powerupIsHit = d < this.radius;
 
-    // Audio for clicking powerup
-    this.hitSound.play();
-  }
+        // Exit if missed
+        if (!this.powerupIsHit) return;
 
-  draw() {
-    push();
-    fill(100, 200);
+        // Audio for clicking powerup
+        this.hitSound.play();
+    }
 
-    translate(this.pos.x, this.pos.y);
+    draw() {
+        push()
+        fill(100, 200);
 
-    const frameIndex = floor(this.frameIndex) % this.animation.length;
-    image(this.animation[frameIndex], 0, 0, this.radius * 2, this.radius * 2);
-    this.animate();
-    pop();
-  }
+        translate(this.pos.x, this.pos.y);
 
-  update() {
-    this.pos.y = this.pos.y + 3;
-  }
+        const frameIndex = floor(this.frameIndex) % this.animation.length;
+        image(this.animation[frameIndex], 0, 0, this.radius * 2, this.radius * 2);
+        this.animate()
+        pop()
+    }
 
-  animate() {
-    this.frameIndex += this.animationSpeed;
-  }
+    update() {
+        this.pos.y = this.pos.y + 3;
+    }
+
+    animate() {
+        this.frameIndex += this.animationSpeed;
+    }
+
 }
 
-export default MultiBallPowerup;
+export default MultiBallPowerup
