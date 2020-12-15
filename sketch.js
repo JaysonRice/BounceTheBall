@@ -20,7 +20,7 @@ const scoreWritten = false;
 
 const balls = [];
 
-const powerupSpawnScore = 2;
+const powerupSpawnScore = 10;
 const multiBallRadius = 30;
 let multiBallPowerup = null;
 let powerupResolved = true;
