@@ -127,7 +127,10 @@ const spawnPowerup = () => {
     multiBallPowerup.update();
     // If the powerup is hit, spawn a new ball and remove the powerup
     if (multiBallPowerup.powerupIsHit) {
-      const ball = new Ball(width / 2, 0, 50, animationBall, 0.15, hitSound);
+      const x = width / 2;
+      const y = height * (3 / 4);
+      const ball = new Ball(x, y, 50, animationBall, 0.15, hitSound);
+      ball.clickEvent(x, y);
       balls.push(ball);
       multiBallPowerup = null;
     }
