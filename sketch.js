@@ -1,21 +1,14 @@
 import Ball from './src/ball.js';
 import MultiBallPowerup from './src/multiball.js';
-import { writeDynamoRecord, uuid } from './src/helpers/dynamoDB.js';
-
-AWS.config.region = 'us-east-1'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-east-1:a90822a4-fcf5-4a93-9e59-c94743e49040',
-});
+import firebaseSettings from "/settings.js"
 
 // TO STOP WRITES TO DB
 // TO STOP WRITES TO DB
-// TO STOP WRITES TO DB
-const DEBUG = true;
+const DEBUG = false;
 
-const dynamodb = new AWS.DynamoDB();
-const docClient = new AWS.DynamoDB.DocumentClient();
 let userId;
 // TODO: have gameover event/restart screen handle this
+let database;
 const scoreWritten = false;
 
 const balls = [];
@@ -72,7 +65,6 @@ const displayBestScore = (score, x = 10, txtSize = 30) => {
     push();
 
     fill(255, 30);
-    // stroke(0);
     strokeWeight(1);
 
     textFont(gameFont);
@@ -98,7 +90,7 @@ const readSpriteSheet = (spriteSheet, spriteData) => {
 const spawnPowerup = () => {
     imageMode(CENTER);
 
-    // If there isn't currently a powerup on screen, spawn one every X frames
+    // If there isn't currently a powerup on screen, spawn one every X points
     if (
         totalScore % powerupSpawnScore === 0
         && totalScore !== 0
@@ -149,6 +141,10 @@ const resetGame = () => {
         sessionBestScore = totalScore;
     }
 
+    if (totalScore > 0 && !DEBUG) {
+        submitScore()
+    }
+
     totalScore = 0;
     deadBallScore = 0;
 
@@ -157,10 +153,25 @@ const resetGame = () => {
     multiBallPowerup = null;
 };
 
+const submitScore = () => {
+    let data = {
+        name: "JTR",
+        score: totalScore
+    }
+
+    const ref = database.ref('scores');
+    ref.push(data)
+    console.log("saved")
+}
+
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    userId = uuid();
 
+    var firebaseConfig = firebaseSettings
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
     imageMode(CENTER);
 
     animationBall = readSpriteSheet(spriteSheetBall, spriteDataBall);

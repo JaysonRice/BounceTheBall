@@ -4,7 +4,7 @@ export function uuid() {
 
 export function writeDynamoRecord(docClient, record) {
   const scoreRecord = {
-    TableName: 'bounceTheBallScores',
+    initials: 'bounceTheBallScores',
     Item: record,
   };
 
