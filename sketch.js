@@ -9,7 +9,7 @@ const DEBUG = false;
 let userId;
 // TODO: have gameover event/restart screen handle this
 let database;
-const scoreWritten = false;
+let nameInput;
 
 const balls = [];
 
@@ -141,7 +141,7 @@ const resetGame = () => {
         sessionBestScore = totalScore;
     }
 
-    if (totalScore > 0 && !DEBUG) {
+    if (totalScore > 0 && nameInput.value() !== "Name" && !DEBUG) {
         submitScore()
     }
 
@@ -155,7 +155,7 @@ const resetGame = () => {
 
 const submitScore = () => {
     let data = {
-        name: "JTR",
+        name: nameInput.value(),
         score: totalScore
     }
 
@@ -176,6 +176,10 @@ function setup() {
 
     animationBall = readSpriteSheet(spriteSheetBall, spriteDataBall);
     animationStar = readSpriteSheet(spriteSheetStar, spriteDataStar);
+
+    nameInput = createInput('Name')
+    nameInput.position(width / 3, height * 0.9);
+
 
     resetGame();
 }
@@ -202,9 +206,13 @@ function draw() {
         textSize(50);
         text('Bounce\nthe Ball', width / 2, height / 4);
         pop();
-
+        nameInput.show()
         displayBestScore(sessionBestScore);
     }
+
+    if (!balls[0].frozen) {
+        nameInput.hide()
+    };
 
     balls.forEach((ball) => {
         ball.draw();
