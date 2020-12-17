@@ -1,4 +1,5 @@
 import Ball from './src/ball.js';
+import { errData, gotData } from './src/leaderboardDataProvider.js';
 import MultiBallPowerup from './src/multiball.js';
 import firebaseSettings from "/settings.js"
 
@@ -172,6 +173,11 @@ function setup() {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     database = firebase.database();
+    // Getting the data for leaderboard
+    let ref = database.ref('scores')
+    ref.on('value', gotData, errData)
+    console.log(data)
+
     imageMode(CENTER);
 
     animationBall = readSpriteSheet(spriteSheetBall, spriteDataBall);
