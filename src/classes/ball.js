@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import constrainAngle from '../helpers/constrainAngle.js';
 import ClickableObject from './clickableObject.js';
 
