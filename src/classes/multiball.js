@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import ClickableObject from './clickableObject.js';
 
 class MultiBallPowerup extends ClickableObject {
