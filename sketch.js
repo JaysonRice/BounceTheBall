@@ -1,22 +1,7 @@
-import Ball from './src/ball.js';
-import MultiBallPowerup from './src/multiball.js';
-import { writeDynamoRecord, uuid } from './src/helpers/dynamoDB.js';
-
-AWS.config.region = 'us-east-1'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-east-1:a90822a4-fcf5-4a93-9e59-c94743e49040',
-});
-
-// TO STOP WRITES TO DB
-// TO STOP WRITES TO DB
-// TO STOP WRITES TO DB
-const DEBUG = true;
-
-const dynamodb = new AWS.DynamoDB();
-const docClient = new AWS.DynamoDB.DocumentClient();
-let userId;
-// TODO: have gameover event/restart screen handle this
-const scoreWritten = false;
+import Ball from './src/classes/ball.js';
+import { displayBestScore, displayScore } from './src/helpers/displayScores.js';
+import { readSpriteSheet } from './src/helpers/readSpritesheet.js';
+import MultiBallPowerup from './src/classes/multiball.js';
 
 const balls = [];
 
@@ -51,54 +36,10 @@ function preload() {
     gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf');
 }
 
-const displayScore = (score, x = width / 2, y = height / 2, txtSize = 150) => {
-    push();
-
-    fill(255, 30);
-    stroke(0);
-    strokeWeight(1);
-
-    textFont(gameFont);
-    textSize(txtSize);
-    textAlign(CENTER, CENTER);
-
-    text(score, x, y);
-    pop();
-};
-
-const displayBestScore = (score, x = 10, txtSize = 30) => {
-    if (score === 0) return;
-
-    push();
-
-    fill(255, 30);
-    // stroke(0);
-    strokeWeight(1);
-
-    textFont(gameFont);
-    textSize(txtSize);
-    textAlign(LEFT);
-
-    text(`Best: ${score}`, x, txtSize + x);
-    pop();
-};
-
-const readSpriteSheet = (spriteSheet, spriteData) => {
-    const { frames } = spriteData;
-    const animation = [];
-    for (let i = 0; i < frames.length; i += 1) {
-        const pos = frames[i].position;
-        const img = spriteSheet.get(pos.x, pos.y, pos.w, pos.h);
-        animation.push(img);
-    }
-
-    return animation;
-};
-
 const spawnPowerup = () => {
     imageMode(CENTER);
 
-    // If there isn't currently a powerup on screen, spawn one every X frames
+    // If there isn't currently a powerup on screen, spawn one every X points
     if (
         totalScore % powerupSpawnScore === 0
         && totalScore !== 0
@@ -159,7 +100,6 @@ const resetGame = () => {
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    userId = uuid();
 
     imageMode(CENTER);
 
@@ -192,7 +132,7 @@ function draw() {
         text('Bounce\nthe Ball', width / 2, height / 4);
         pop();
 
-        displayBestScore(sessionBestScore);
+        displayBestScore(sessionBestScore, gameFont);
     }
 
     balls.forEach((ball) => {
@@ -213,21 +153,10 @@ function draw() {
     totalScore = balls.reduce((accum, curr) => accum + curr.hitCount, 0);
     totalScore += deadBallScore;
 
-    displayScore(totalScore);
+    displayScore(totalScore, gameFont);
 
-    // TODO: put this logic elsewhere and change logic to know if all balls are gone from array
     if (balls.length < 1) {
         resetGame();
-        // if (!scoreWritten && totalScore > 0 && !DEBUG) {
-        //   const scoreRecord = {
-        //     userId,
-        //     score: totalScore,
-        //     userName: 'JMR',
-        //   };
-        //   console.log('it worked');
-        //   writeDynamoRecord(docClient, scoreRecord);
-        //   scoreWritten = true;
-        // }
     }
 }
 

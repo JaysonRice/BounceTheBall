@@ -1,4 +1,4 @@
-import constrainAngle from './helpers/constrainAngle.js';
+import constrainAngle from '../helpers/constrainAngle.js';
 import ClickableObject from './clickableObject.js';
 
 class Ball extends ClickableObject {
