@@ -1,2 +1,3 @@
-# SoccerClone
-Clone of messenger soccer game with p5js
+# Bounce the Ball
+
+Remake of Facebook Messenger's soccer game.
