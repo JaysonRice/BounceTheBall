@@ -2,6 +2,7 @@
 /* eslint-disable import/extensions */
 import Ball from './src/classes/ball.js';
 import { displayBestScore, displayScore } from './src/helpers/displayScores.js';
+import { readHighScoreCookie, writeHighScoreCookie } from './src/helpers/saveHighScoreCookie.js';
 import MultiBallPowerup from './src/classes/multiball.js';
 import readSpriteSheet from './src/helpers/readSpritesheet.js';
 
@@ -91,6 +92,7 @@ const resetGame = () => {
 
   if (totalScore > sessionBestScore) {
     sessionBestScore = totalScore;
+    writeHighScoreCookie(sessionBestScore);
   }
 
   totalScore = 0;
@@ -135,7 +137,7 @@ function draw() {
     text('Bounce\nthe Ball', width / 2, height / 4);
     pop();
 
-    displayBestScore(sessionBestScore, gameFont);
+    displayBestScore(readHighScoreCookie(), gameFont);
   }
 
   balls.forEach((ball) => {
