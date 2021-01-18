@@ -2,6 +2,12 @@
 import constrainAngle from '../helpers/constrainAngle.js';
 import ClickableObject from './clickableObject.js';
 
+const GRAVITY_60_FPS = 0.35;
+const SPEEDLIMIT_60_FPS = 17;
+
+const GRAVITY_30_FPS = 1.3;
+const SPEEDLIMIT_30_FPS = 30;
+
 class Ball extends ClickableObject {
   constructor(x, y, radius, animation, animationSpeed, hitSound) {
     // Inherits properties all clickable objects need
@@ -34,13 +40,20 @@ class Ball extends ClickableObject {
 
     // Magic number constant land:
     this.restitution = 0.8;
-    this.gravity = createVector(0, 0.35);
-    this.speedLimit = 17;
+    this.gravity = createVector(0, GRAVITY_60_FPS);
+    this.speedLimit = SPEEDLIMIT_60_FPS;
 
     // How hard does the user hit the ball?
     this.hitMagnitude = this.gravity.y * 100;
     // For applying hitMagnitude force to ball
     this.hitForce = createVector();
+  }
+
+  scalePhysics() {
+    const fps = frameRate();
+    this.gravity.y = map(fps, 30, 60, GRAVITY_30_FPS, GRAVITY_60_FPS, true);
+    this.speedLimit = map(fps, 30, 60, SPEEDLIMIT_30_FPS, SPEEDLIMIT_60_FPS, true);
+    this.hitMagnitude = this.gravity.y * 100;
   }
 
   applyForce(force) {
@@ -118,6 +131,7 @@ class Ball extends ClickableObject {
 
   update() {
     if (this.frozen) return;
+    this.scalePhysics();
 
     // Bounce off side walls
     this.wallBounce();
