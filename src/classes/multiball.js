@@ -1,6 +1,9 @@
 /* eslint-disable import/extensions */
 import ClickableObject from './clickableObject.js';
 
+const GRAVITY_60_FPS = 3;
+const GRAVITY_30_FPS = 6;
+
 class MultiBallPowerup extends ClickableObject {
   // TODO: Add animation and sound effect for getting powerup
   constructor(x, y, radius, animation, animationSpeed, hitSound) {
@@ -35,7 +38,7 @@ class MultiBallPowerup extends ClickableObject {
   }
 
   update() {
-    this.pos.y += 3;
+    this.pos.y += map(frameRate(), 30, 60, GRAVITY_30_FPS, GRAVITY_60_FPS, true);
   }
 
   animate() {
