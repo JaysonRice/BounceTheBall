@@ -74,6 +74,7 @@ const spawnPowerup = () => {
       const y = height;
       const ball = new Ball(x, y, 50, animationBall, 0.15, hitSound);
       ball.clickEvent(x, y);
+      ball.hitCount = 0;
       balls.push(ball);
       multiBallPowerup = null;
     }
