@@ -1,0 +1,14 @@
+[
+      {
+            "relation": [
+                  "delegate_permission/common.handle_all_urls"
+            ],
+            "target": {
+                  "namespace": "android_app",
+                  "package_name": "io.github.jaysonrice.twa",
+                  "sha256_cert_fingerprints": [
+                        "04:07:DF:C9:5C:84:E8:7E:40:68:3F:F2:BD:B1:01:10:9A:4B:52:3E:9C:E0:C1:9F:ED:93:48:79:BD:5A:69:2A"
+                  ]
+            }
+      }
+]
