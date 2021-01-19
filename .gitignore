@@ -1,3 +1,6 @@
+# android-studio proj files
+.idea
+
 # Logs
 logs
 *.log
