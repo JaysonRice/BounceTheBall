@@ -1,5 +1,5 @@
 export const displayBestScore = (score, gameFont, x = 10, txtSize = 30) => {
-  if (score === 0) return;
+  if (score <= 0) return;
 
   push();
 
