@@ -1,3 +1,5 @@
+*.DS_Store
+
 # android-studio proj files
 .idea
 
