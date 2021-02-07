@@ -26,7 +26,7 @@ class Ball extends ClickableObject {
 
     // For detecting if edge of ball off screen in X dir
     this.minX = this.radius;
-    this.maxX = width - this.radius;
+    // this.maxX is defined as a getter below: width - this.radius;
 
     // Constrain angle to always be hitting the ball up
     // ie angleHit = constrain(angleHit, this.minAngle, this.maxAngle)
@@ -47,6 +47,10 @@ class Ball extends ClickableObject {
     this.hitMagnitude = this.gravity.y * 100;
     // For applying hitMagnitude force to ball
     this.hitForce = createVector();
+  }
+
+  get maxX() {
+    return width - this.radius;
   }
 
   scalePhysics() {

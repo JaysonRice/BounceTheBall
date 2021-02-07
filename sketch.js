@@ -12,6 +12,7 @@ const powerupSpawnScore = 10;
 const multiBallRadius = 30;
 let multiBallPowerup = null;
 let powerupResolved = true;
+let resize;
 
 let totalScore = 0;
 let deadBallScore = 0;
@@ -87,6 +88,11 @@ const spawnPowerup = () => {
 };
 
 const resetGame = () => {
+  if (resize) {
+    resizeCanvas(windowWidth, windowHeight);
+    resize = false;
+  }
+
   const ball = new Ball(width / 2, height * (3 / 4), 50, animationBall, 0.15, hitSound);
   ball.frozen = true;
 
@@ -129,6 +135,14 @@ function touchStarted() {
   return false;
 }
 
+function windowResized() {
+  if (balls.length === 1 && balls[0].frozen) {
+    resizeCanvas(windowWidth, windowHeight);
+  } else {
+    resize = true;
+  }
+}
+
 function draw() {
   background(25);
   fill(255, 30);
@@ -139,6 +153,9 @@ function draw() {
     textSize(50);
     text('Bounce\nthe Ball', width / 2, height / 4);
     pop();
+
+    balls[0].pos.x = width / 2;
+    balls[0].pos.y = height * (3 / 4);
 
     // If never played then readHighScoreCookie() returns -1
     // displayBestScore() only displays if score > 0
@@ -172,6 +189,7 @@ function draw() {
 
 window.mousePressed = mousePressed;
 window.touchStarted = touchStarted;
+window.windowResized = windowResized;
 
 window.preload = preload;
 window.setup = setup;
