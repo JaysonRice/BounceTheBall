@@ -139,8 +139,6 @@ function setup() {
 
   addToHomeScreenBtn = new AddToHomeSceenButton(
     {
-      x: 0,
-      y: 0,
       installed: appIsInstalled,
       prompt: confirmInstallPrompt,
       fnt: fontAwesomeIcons,
@@ -190,6 +188,7 @@ function draw() {
     // displayBestScore() only displays if score > 0
     displayBestScore(readHighScoreCookie(), gameFont);
 
+    // Place in bottom right corner
     addToHomeScreenBtn.x = width - addToHomeScreenBtn.width * 1.1;
     addToHomeScreenBtn.y = height - addToHomeScreenBtn.height * 1.1;
     addToHomeScreenBtn.draw();

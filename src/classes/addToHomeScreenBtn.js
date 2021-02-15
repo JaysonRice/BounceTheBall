@@ -1,6 +1,6 @@
 export default class AddToHomeSceenButton {
   constructor({
-    x, y, prompt, installed, fnt, fntSize = 30,
+    prompt, installed, fnt, x = 0, y = 0, fntSize = 30,
   }) {
     this.x = x;
     this.y = y;
