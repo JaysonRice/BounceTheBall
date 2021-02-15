@@ -55,7 +55,7 @@ export function readHighScoreCookie() {
 
 export function writeHighScoreCookie(score) {
   const cookieName = 'high_score';
-  const daysTillExpires = 7;
+  const daysTillExpires = 999;
 
   const currentHighScore = readHighScoreCookie();
 
