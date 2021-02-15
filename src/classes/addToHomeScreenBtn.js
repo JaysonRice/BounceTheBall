@@ -1,4 +1,3 @@
-export default class AddToHomeSceenButton {
 export default class AddToHomeScreenButton {
   constructor({
     prompt, installed, fnt, x = 0, y = 0, fntSize = 30,
@@ -51,6 +50,13 @@ export default class AddToHomeScreenButton {
     if (this.installed) return;
 
     push();
+    noStroke();
+    fill(128);
+    ellipse(this.x, this.y * 1.0075, this.fntSize * 1.5);
+    pop();
+
+    push();
+    fill(25);
     textFont(this.fnt);
     textSize(this.fntSize);
     textAlign(CENTER, CENTER);
