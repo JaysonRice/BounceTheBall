@@ -5,7 +5,7 @@ import { displayBestScore, displayScore } from './src/helpers/displayScores.js';
 import { readHighScoreCookie, writeHighScoreCookie } from './src/helpers/saveHighScoreCookie.js';
 import MultiBallPowerup from './src/classes/multiball.js';
 import readSpriteSheet from './src/helpers/readSpritesheet.js';
-import AddToHomeSceenButton from './src/classes/addToHomeScreenBtn.js';
+import AddToHomeScreenButton from './src/classes/addToHomeScreenBtn.js';
 
 const balls = [];
 
@@ -137,7 +137,7 @@ function setup() {
   animationBall = readSpriteSheet(spriteSheetBall, spriteDataBall);
   animationStar = readSpriteSheet(spriteSheetStar, spriteDataStar);
 
-  addToHomeScreenBtn = new AddToHomeSceenButton(
+  addToHomeScreenBtn = new AddToHomeScreenButton(
     {
       installed: appIsInstalled,
       prompt: confirmInstallPrompt,

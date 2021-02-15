@@ -1,4 +1,5 @@
 export default class AddToHomeSceenButton {
+export default class AddToHomeScreenButton {
   constructor({
     prompt, installed, fnt, x = 0, y = 0, fntSize = 30,
   }) {
