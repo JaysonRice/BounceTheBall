@@ -40,6 +40,7 @@ function getCookie(name) {
  * Source: https://stackoverflow.com/a/2138471/5731525
  * @param {*} name name of cookie
  */
+// eslint-disable-next-line no-unused-vars
 function eraseCookie(name) {
   document.cookie = `${name}=; Max-Age=-99999999;`;
 }
@@ -55,7 +56,7 @@ export function readHighScoreCookie() {
 
 export function writeHighScoreCookie(score) {
   const cookieName = 'high_score';
-  const daysTillExpires = 7;
+  const daysTillExpires = 999;
 
   const currentHighScore = readHighScoreCookie();
 

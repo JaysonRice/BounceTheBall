@@ -5,6 +5,7 @@ import { displayBestScore, displayScore } from './src/helpers/displayScores.js';
 import { readHighScoreCookie, writeHighScoreCookie } from './src/helpers/saveHighScoreCookie.js';
 import MultiBallPowerup from './src/classes/multiball.js';
 import readSpriteSheet from './src/helpers/readSpritesheet.js';
+import AddToHomeScreenButton from './src/classes/addToHomeScreenBtn.js';
 
 const balls = [];
 
@@ -29,6 +30,21 @@ let animationStar;
 let hitSound;
 let powerupSound;
 let gameFont;
+let fontAwesomeIcons;
+
+let confirmInstallPrompt;
+let appIsInstalled = true;
+let addToHomeScreenBtn;
+
+const handleInstallPromptEvent = (event) => {
+  confirmInstallPrompt = event;
+  appIsInstalled = false;
+
+  if (addToHomeScreenBtn) {
+    addToHomeScreenBtn.prompt = confirmInstallPrompt;
+    addToHomeScreenBtn.installed = appIsInstalled;
+  }
+};
 
 function preload() {
   spriteDataBall = loadJSON('src/assets/images/ball.json');
@@ -38,6 +54,7 @@ function preload() {
   hitSound = loadSound('src/assets/sounds/SoftHit.wav');
   powerupSound = loadSound('src/assets/sounds/PowerUp.wav');
   gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf');
+  fontAwesomeIcons = loadFont('src/assets/fonts/font-awesome.otf');
 }
 
 const spawnPowerup = () => {
@@ -120,6 +137,15 @@ function setup() {
   animationBall = readSpriteSheet(spriteSheetBall, spriteDataBall);
   animationStar = readSpriteSheet(spriteSheetStar, spriteDataStar);
 
+  addToHomeScreenBtn = new AddToHomeScreenButton(
+    {
+      installed: appIsInstalled,
+      prompt: confirmInstallPrompt,
+      fnt: fontAwesomeIcons,
+      fntSize: 30,
+    },
+  );
+
   resetGame();
 }
 
@@ -128,6 +154,7 @@ function mousePressed() {
   if (multiBallPowerup) {
     multiBallPowerup.clickEvent(mouseX, mouseY);
   }
+  addToHomeScreenBtn.clickEvent(mouseX, mouseY);
 }
 
 function touchStarted() {
@@ -160,6 +187,11 @@ function draw() {
     // If never played then readHighScoreCookie() returns -1
     // displayBestScore() only displays if score > 0
     displayBestScore(readHighScoreCookie(), gameFont);
+
+    // Place in bottom right corner
+    addToHomeScreenBtn.x = width - addToHomeScreenBtn.width * 1.1;
+    addToHomeScreenBtn.y = height - addToHomeScreenBtn.height * 1.1;
+    addToHomeScreenBtn.draw();
   }
 
   balls.forEach((ball) => {
@@ -194,3 +226,5 @@ window.windowResized = windowResized;
 window.preload = preload;
 window.setup = setup;
 window.draw = draw;
+
+window.addEventListener('beforeinstallprompt', handleInstallPromptEvent);

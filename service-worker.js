@@ -11,6 +11,7 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/addons/p5.sound.min.js',
 
   './src/assets/fonts/FjallaOne-Regular.ttf',
+  './src/assets/fonts/font-awesome.otf',
 
   './src/assets/images/ball.json',
   './src/assets/images/ball.png',
@@ -39,16 +40,15 @@ const urlsToCache = [
 
 ];
 
+// eslint-disable-next-line no-restricted-globals
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      }),
+      .then((cache) => cache.addAll(urlsToCache)),
   );
 });
 
+// eslint-disable-next-line no-restricted-globals
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     (caches
