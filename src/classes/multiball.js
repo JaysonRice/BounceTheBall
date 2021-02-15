@@ -5,7 +5,6 @@ const GRAVITY_60_FPS = 3;
 const GRAVITY_30_FPS = 6;
 
 class MultiBallPowerup extends ClickableObject {
-  // TODO: Add animation and sound effect for getting powerup
   constructor(x, y, radius, animation, animationSpeed, hitSound) {
     // Inherits properties all clickable objects need
     // pos.x/pos.y/radius/animation/animationSpeed/frameIndex/hitSound
