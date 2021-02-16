@@ -1,6 +1,15 @@
+// Detects if device is on iOS
+const isIos = () => {
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(userAgent);
+};
+
+// Detects if device is in standalone mode
+const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
 export default class AddToHomeScreenButton {
   constructor({
-    prompt, installed, fnt, x = 0, y = 0, fntSize = 30,
+    prompt, installed, fnt, x = 0, y = 0, fntSize = 30, iosToolTipImage = null,
   }) {
     this.x = x;
     this.y = y;
@@ -8,9 +17,16 @@ export default class AddToHomeScreenButton {
     this.fntSize = fntSize;
 
     this.text = '\uf019';
-
-    this.installed = installed;
     this.prompt = prompt;
+
+    this.isIos = isIos();
+    if (this.isIos) {
+      this.installed = isIos() && !isInStandaloneMode();
+      this.showIosToolTip = false;
+      this.iosToolTipImage = iosToolTipImage;
+    } else {
+      this.installed = installed;
+    }
   }
 
   get width() {
@@ -34,16 +50,49 @@ export default class AddToHomeScreenButton {
     return onX && onY;
   }
 
-  clickEvent(clickX, clickY) {
-    if (this.clicked(clickX, clickY) && this.prompt) {
+  defaultClickEvent() {
+    if (this.prompt) {
       this.prompt.prompt();
 
       this.prompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
-          this.installed = false;
+          this.installed = true;
         }
       });
     }
+  }
+
+  clickEvent(clickX, clickY) {
+    if (this.clicked(clickX, clickY) && !this.installed) {
+      if (this.isIos) {
+        this.showIosToolTip = true;
+      } else {
+        this.defaultClickEvent();
+      }
+    } else {
+      this.showIosToolTip = false;
+    }
+  }
+
+  drawIosToolTip() {
+    if (!this.showIosToolTip || !this.iosToolTipImage) return;
+
+    let imgW;
+    let imgH;
+    const maxW = width * 0.75;
+    if (this.iosToolTipImage.width > maxW) {
+      imgW = maxW;
+      imgH = this.iosToolTipImage.height * (imgW / this.iosToolTipImage.width);
+    } else {
+      imgW = this.iosToolTipImage.width;
+      imgH = this.iosToolTipImage.height;
+    }
+
+    push();
+    imageMode(CENTER);
+    const adjY = -(imgH / 2) * 1.05;
+    image(this.iosToolTipImage, width / 2, height + adjY, imgW, imgH);
+    pop();
   }
 
   draw() {
@@ -62,5 +111,7 @@ export default class AddToHomeScreenButton {
     textAlign(CENTER, CENTER);
     text(this.text, this.x, this.y);
     pop();
+
+    this.drawIosToolTip();
   }
 }

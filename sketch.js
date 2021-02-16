@@ -22,6 +22,7 @@ let sessionBestScore = 0;
 let spriteDataBall;
 let spriteSheetBall;
 let animationBall;
+let iosToolTipImage;
 
 let spriteDataStar;
 let spriteSheetStar;
@@ -54,7 +55,9 @@ function preload() {
   hitSound = loadSound('src/assets/sounds/SoftHit.wav');
   powerupSound = loadSound('src/assets/sounds/PowerUp.wav');
   gameFont = loadFont('src/assets/fonts/FjallaOne-Regular.ttf');
+
   fontAwesomeIcons = loadFont('src/assets/fonts/font-awesome.otf');
+  iosToolTipImage = loadImage('src/assets/images/ios_install_tooltip.png');
 }
 
 const spawnPowerup = () => {
@@ -143,6 +146,7 @@ function setup() {
       prompt: confirmInstallPrompt,
       fnt: fontAwesomeIcons,
       fntSize: 30,
+      iosToolTipImage,
     },
   );
 
