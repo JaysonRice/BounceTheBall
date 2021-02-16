@@ -21,7 +21,7 @@ export default class AddToHomeScreenButton {
 
     this.isIos = isIos();
     if (this.isIos) {
-      this.installed = isIos() && !isInStandaloneMode();
+      this.installed = isIos() && isInStandaloneMode();
       this.showIosToolTip = false;
       this.iosToolTipImage = iosToolTipImage;
     } else {
