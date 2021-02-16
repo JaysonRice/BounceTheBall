@@ -18,6 +18,7 @@ const urlsToCache = [
   './src/assets/images/social_img.png',
   './src/assets/images/star.json',
   './src/assets/images/star.png',
+  './src/assets/images/ios_install_tooltip.png',
 
   './src/assets/sounds/PowerUp.wav',
   './src/assets/sounds/SoftHit.wav',
