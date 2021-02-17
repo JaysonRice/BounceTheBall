@@ -1,10 +1,15 @@
-// Detects if device is on iOS
-const isIos = () => {
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  return /iphone|ipad|ipod/.test(userAgent);
+const isIos = (userAgent) => {
+  const ua = userAgent || window.navigator.userAgent;
+  return /iPhone|iPad|iPod/i.test(ua);
 };
 
-// Detects if device is in standalone mode
+const isIosSafari = () => {
+  const ua = window.navigator.userAgent;
+  const iOS = isIos(ua);
+  const webkit = /WebKit/i.test(ua);
+  return iOS && webkit && !/CriOS/i.test(ua);
+};
+
 const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
 
 export default class AddToHomeScreenButton {
@@ -20,6 +25,7 @@ export default class AddToHomeScreenButton {
     this.prompt = prompt;
 
     this.isIos = isIos();
+    this.isIosSafari = isIosSafari();
     if (this.isIos) {
       this.installed = isIos() && isInStandaloneMode();
       this.showIosToolTip = false;
@@ -27,6 +33,13 @@ export default class AddToHomeScreenButton {
     } else {
       this.installed = installed;
     }
+  }
+
+  get preventDraw() {
+    // Don't draw if already installed or
+    // if on iOS not in safari
+    // (install only possible through safari afaik)
+    return this.installed || (this.isIos && !this.isIosSafari);
   }
 
   get width() {
@@ -43,7 +56,7 @@ export default class AddToHomeScreenButton {
   }
 
   clicked(clickX, clickY) {
-    if (this.installed) return false;
+    if (this.preventDraw) return false;
 
     const onX = abs(clickX - this.x) < this.width / 2;
     const onY = abs(clickY - this.y) < this.height / 2;
@@ -63,7 +76,9 @@ export default class AddToHomeScreenButton {
   }
 
   clickEvent(clickX, clickY) {
-    if (this.clicked(clickX, clickY) && !this.installed) {
+    if (this.preventDraw) return;
+
+    if (this.clicked(clickX, clickY)) {
       if (this.isIos) {
         this.showIosToolTip = true;
       } else {
@@ -96,7 +111,7 @@ export default class AddToHomeScreenButton {
   }
 
   draw() {
-    if (this.installed) return;
+    if (this.preventDraw) return;
 
     push();
     noStroke();
